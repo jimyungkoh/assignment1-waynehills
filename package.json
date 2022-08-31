@@ -11,7 +11,7 @@
   "keywords": [],
   "author": "Wanted-Team-G",
   "license": "ISC",
-  "Dependencies": {
+  "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
