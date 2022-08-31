@@ -1,0 +1,5 @@
+# ignore node_modules dir
+/node_modules
+
+# ignore 환경 변수 파일
+.env
