@@ -1,7 +1,8 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const cors = require("cors");
+const logger = require("morgan");
 
-const {PORT} = require('./config/config.js');
+const { PORT } = require("./config/config.js");
 
 /**
  * express middleware를 사용합니다.
@@ -10,16 +11,9 @@ const {PORT} = require('./config/config.js');
  * @returns {express.Application}
  */
 function loader(app) {
-  app.use(bodyParser.json());
-  app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin',
-      '*');
-    res.setHeader('Access-Control-Allow-Methods',
-      'GET, POST, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers',
-      'Content-Type, Authorization');
-    next();
-  });
+  app.use(express.json());
+  app.use(cors());
+  app.use(logger("combined"));
 
   return app;
 }
@@ -33,7 +27,6 @@ function registerRouters(app) {
   // app.use('/components/user/...', routers.xxApi);
   return app;
 }
-
 /**
  * express 서비스를 생성합니다.
  */
@@ -43,11 +36,16 @@ async function bootstrap() {
   loader(app);
   registerRouters(app);
 
+  // 서버 체크를 위한 ping-pong End Point
+  app.get("/ping", (req, res) => {
+    res.status(200).json({ message: "pong" });
+  });
+
   return app.listen(PORT, () => {
-    console.log('Running server on ' + PORT);
+    console.log("Running server on " + PORT);
   });
 }
 
 module.exports = {
-  bootstrap
-}
+  bootstrap,
+};
