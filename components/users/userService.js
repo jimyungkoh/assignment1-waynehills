@@ -124,6 +124,36 @@ exports.login = async (username, password) => {
 
 
 /**
+ * 논리적 삭제 메서드 : deleteUser
+ * @todo 회원 삭제 deleteUser 메서드
+ * @param {string} username 
+ * @returns {???} // 제 생각은 없어도 될듯 합니다만,,
+ */
+exports.deleteUser = async (username) => {
+    await User.update({ deleted_at: new Date() }, 
+        { where: { 
+            username : username
+            } 
+        });  
+}
+/**
+ * 삭제 메서드 예시
+ * - 삭제 메서드의 호출 주체는 userApi(route)입니다.
+ * @param {string} user_id '유저가 설정한' 메서드입니다.
+ * exports.delete = async (user_id) => {
+ *   const destroyResult = await OpeningModel.destroy({where: {id: id}});
+ *
+ *   if (!destroyResult) {
+ *     throw NotFoundError(`${user_id} doesn't exist in opening table`);
+ *   }
+ * }
+ */
+
+
+
+
+
+/**
  * 이거는 api 에서 안 꺼내쓰고 서비스 내부에서 해결 가느ㅡㅇ할듯???
  * @todo 회원 중복아이디 확인 validateUserId 메서드
  * @param {string} username 
