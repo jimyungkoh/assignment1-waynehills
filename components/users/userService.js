@@ -150,11 +150,41 @@ exports.deleteUser = async (username) => {
  */
 
 
+/**
+ * @todo 회원 권한변경 editUserRole 메서드
+ * @param {string} username 
+ * @param {string} role
+ * @returns {???} // 제 생각은 없어도 될듯 합니다만,,
+ */
+exports.editUserRole = async (username, role) => {
+    await User.update({ role: role }, 
+        { where: { 
+            username : username
+            } 
+        });  
+    return res.status(200).json({message:'권한 수정됨'})
+}
 
+/**
+ * 이거는 수정이 필요, 사용자 정보 & 요구되는 권한으로 확인해ㅐ야 함. ++ 이거는 미들웨어로 점검하는게 좋을 것 같은데 !
+ * @todo 회원 권한확인 validateUserRole 메서드
+ * @param {string} userRole 유저의 권한
+ * @param {string} requireRole 요구되는 권한
+ * @returns {???} 
+ */
+exports.validateUserRole = async (userRole, requireRole) => {
+    return await User.findOne({
+        where: {
+            role: requireRole
+        }
+    }).catch((err) => {
+        return next(err);
+    });
+} 
 
 
 /**
- * 이거는 api 에서 안 꺼내쓰고 서비스 내부에서 해결 가느ㅡㅇ할듯???
+ * 이거는 api 에서 안쓰고 서비스 내부에서 해결 가느ㅡㅇ할듯???
  * @todo 회원 중복아이디 확인 validateUserId 메서드
  * @param {string} username 
  * @returns {boolean} 
