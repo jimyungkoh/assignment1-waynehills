@@ -3,6 +3,7 @@ const cors = require("cors");
 const logger = require("morgan");
 
 const { PORT } = require("./config/config.js");
+const { sequelize } = require("./model");
 
 /**
  * express middleware를 사용합니다.
@@ -32,6 +33,13 @@ function registerRouters(app) {
  */
 async function bootstrap() {
   const app = express();
+
+  sequelize
+    .sync({ force: false })
+    .then(() => console.log("connected database"))
+    .catch((err) =>
+      console.error("occurred error in database connecting", err)
+    );
 
   loader(app);
   registerRouters(app);
