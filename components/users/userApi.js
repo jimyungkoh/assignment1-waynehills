@@ -30,7 +30,7 @@ router.post('/signUp', async (req, res, next) => {
   const {name, birthday, gender, phoneNumber, username, password} = req.body;
 
   try {
-    await userService.validateUserId(email);
+    await userService.validateUserId(username);
     await userService.signUp(name, birthday, gender, phoneNumber, username, password);
 
     res.status(200).json({
@@ -66,11 +66,11 @@ router.post('/login', async (req, res, next) => {
  * @todo 회원 삭제하기
  * */
 
-router.delete('/delete/:username', async (req, res, next) => {
-    const username = req.params.username;
+router.delete('/delete', async (req, res, next) => {
+    const username = req.username;
     
     try {
-      await userService.delete(username);
+      await userService.deleteUser(username);
 
       res.status(200).json({
         success: true,
@@ -85,13 +85,12 @@ router.delete('/delete/:username', async (req, res, next) => {
  * @todo 회원 등급변경
  * */
 
-router.patch('/role/:username', async (req, res, next) => {
-    const username = req.params.username;
-    const role = req.body.role;
+router.patch('/role', async (req, res, next) => {
+    const {username, role} = req.body;
     
     try {
-      await userService.validateUserAuth(req.role, 'admin'); // 운영진 등급인지 확인
-      await userService.editRole(username, role);
+      await userService.validateUserRole(req.role, 'admin'); // 운영진 등급인지 확인
+      await userService.editUserRole(username, role);
 
       res.status(200).json({
         success: true,
