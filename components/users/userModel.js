@@ -49,7 +49,7 @@ module.exports = (sequelize) => {
         defaultValue: "user",
       },
       gender: {
-        type: DataTypes.ENUM("mail", "femail"),
+        type: DataTypes.ENUM("male", "female"),
       },
       birthday: {
         type: DataTypes.DATEONLY,
