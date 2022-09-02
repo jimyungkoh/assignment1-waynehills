@@ -209,7 +209,7 @@ exports.validateUserRole = async (req, res, next) => {
   console.log("userId", userId.id);
   const user = await UserModel.findByPk(userId.id);
   if (!user) {
-    return res.status(401).json({ message: "User not found" });
+    throw new BadRequestError(`cant find user`);
   }
   return user.dataValues;
 };
