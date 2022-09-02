@@ -62,6 +62,7 @@ const verify = async (token) => {
  * @param {string} username
  * @param {string} password
  * @returns
+ * @throws {BadRequestError} username 또는 password를 찾지 못할 때 발생
  */
 const findUser = async (username, password) => {
   const find = await UserModel.findOne({
@@ -102,6 +103,7 @@ const passwordsAreEqual = async (enteredPassword, userPassword) => {
  * @param {string} username
  * @param {string} password
  * @returns {}
+ * @throws {BadRequestError} 가입을 위해 입력한 username 혹은 phoneNumber 가 이미 사용중일 때 발생
  */
 exports.signUp = async (
   name,
@@ -113,7 +115,7 @@ exports.signUp = async (
 ) => {
   const aa = await validateUserId(username, phoneNumber);
   if (aa) {
-    throw new UnauthorizedError("username or phoneNumber already exists");
+    throw new BadRequestError("username or phoneNumber already exists");
   }
   const hash = await hashPassword(password);
   const newUser = await UserModel.create({
@@ -136,6 +138,7 @@ exports.signUp = async (
  * @param {string} username
  * @param {string} password
  * @returns {string} // login 성공시 사용자 정보 전달
+ * @throws {BadRequestError} id(PK)를 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
  */
 
 exports.login = async (username, password) => {
@@ -154,6 +157,7 @@ exports.login = async (username, password) => {
  * 사용자 탈퇴
  * destore(시퀄에서 삭제 orm)사용하면 데이터 그대로 남고 deletedAt 만 쿼리날린 시간으로 업데이트
  * @param {string} username
+ * @throws {BadRequestError}  username을 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
  */
 exports.deleteUser = async (username) => {
   const destroyResult = await UserModel.destroy({
@@ -170,6 +174,7 @@ exports.deleteUser = async (username) => {
  * @param {string} username
  * @param {string} role
  * @returns
+ * @throws {BadRequestError}  username을 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
  */
 exports.editUserRole = async (username, role) => {
   await UserModel.update(
@@ -201,7 +206,8 @@ exports.editUserRole = async (username, role) => {
  * @todo 회원 권한확인 validateUserRole 메서드
  * @param {string} userRole 유저의 권한
  * @param {string} requireRole 요구되는 권한
- * @returns {???} // 사용자 정보
+ * @returns {} // 사용자 정보
+ * @throws {BadRequestError} id(PK)를 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
  */
 exports.validateUserRole = async (req, res, next) => {
   const userId = await verify(req.header("token"));
