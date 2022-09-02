@@ -52,22 +52,42 @@ const verify = async (token) => {
 }
 
 /**
- * 테이블에 username과 password가 같은 항목을 찾는 메서드 : findUser
+ * 테이블에 username과 password가 같은 항목을 찾는(로그인을 위한) 메서드 : findUser
  * @param {string} username 
  * @param {string} password 
  * @returns 
  */
-const findUser = async (username, password) => {
-    return await User.findOne({
+ const findUser = async (username, password) => {
+
+    const find = await UserModel.findOne({
         where: {
             username: username,
-            password: hashPassword(password)}
+        }
     }).catch((err) => {
-        return next(err);
+        throw new BadRequestError(err)
     });
+    if(!find){
+        throw new BadRequestError('username Error')
+    }
+    if(passwordsAreEqual(password,find.password)){
+        console.log("find",find)
+        return find;
+    } else {
+        throw new BadRequestError('password Error')
+    }
+
 }
 
-
+/**
+ * bcrypt 모듈 내부에서 제공하는 비밀번호 비교 매서드
+ * @param {string} enteredPassword 
+ * @param {string}  userPassword 
+ * @returns {boolean}
+ */
+ const passwordsAreEqual = async(enteredPassword, userPassword) => {
+    const bool = await bcrypt.compare(enteredPassword,userPassword);
+    return bool;
+}
 
 /**
  * @todo 회원 생성 signUp 메서드 
