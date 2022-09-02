@@ -136,13 +136,8 @@ const verify = async (token) => {
     console.log("correctUser : ",correctUser)
     if(correctUser){
         const jwtToken = await makeToken(correctUser.dataValues.id);
-        console.log("jwtToken",jwtToken)
-        const result ={
-            token: jwtToken,
-            correctUser:correctUser.dataValues
-        }
-        
-        return correctUser.dataValues
+        console.log("jwtToken",jwtToken)        
+        return jwtToken
     }
     else {
         throw new BadRequestError('cant find user');
