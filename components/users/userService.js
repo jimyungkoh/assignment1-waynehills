@@ -68,7 +68,7 @@ const verify = async (token) => {
             username: username,
         }
     }).catch((err) => {
-        throw new BadRequestError(err)
+        throw new Error(err)
     });
     if(!find){
         throw new BadRequestError('username Error')
@@ -119,7 +119,7 @@ const verify = async (token) => {
         birthday:birthday,
         lastLoginDate : new Date(), // 되나??
     }).catch((err) => {
-        throw new BadRequestError(err)
+        throw new Error(err)
     });
     return newUser
 }
@@ -214,7 +214,7 @@ exports.editUserRole = async (username, role) => {
         ],
         }
     }).catch((err) => {
-        throw new BadRequestError('bed request');
+        throw new Error(err);
     });
     console.log("중복된 데이터",du)
     return du
