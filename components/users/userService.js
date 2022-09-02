@@ -8,10 +8,13 @@ const bcrypt = require ('bcrypt')
  * @param {string} password 
  * @returns {string} 
  */
-hashPassword = async (password) => {
-    const hash = await bcrypt.hash(password, salt)
+ hashPassword = async (password) => {
+    const hash = await bcrypt.hash(password, 12)
+    console.log("hash : ",hash)
+    console.log("typeof hash : ",typeof hash)
     return hash;
 }
+
 /**
  * jwt token 을 만드는 메서드 : jwt
  * @param {int} id 
