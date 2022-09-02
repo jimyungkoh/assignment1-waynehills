@@ -1,44 +1,90 @@
 const {UserModel, PostModel} = require("../../model");
-
-/**
- * NotFoundError: 원하는 id값을 조회할 수 없는 경우
- * BadRequestError: create or update 메서드를 날릴 때 원하지 않는 객체가 들어온 경우
- * ForbiddenError:  없는 경우
- * */
 const {NotFoundError, BadRequestError, ForbiddenError} = require('../../errors/httpErrors');
 
 // 0: free, 1: notice, 2: operation
-const postType = PostModel.getAttributes().type.values;
-const FREE = postType[0];
-const NOTICE = postType[1];
-const OPERATION = postType[2];
+const postTypes = PostModel.getAttributes().type.values;
+const [postTypeFree, postTypeNotice, postTypeOperation] = postTypes;
 
 // 0: user, 1: admin
-const userRoles = UserModel.getAttributes().role.values;
-const USER = userRoles[0];
-const ADMIN = userRoles[1];
+const [userRoleUser, userRoleAdmin] = UserModel.getAttributes().role.values;
 
 /**
- * @description 게시글 입력 값 유효성 확인
- * @param {Object} post
- * @throws {BadRequestError}
+ * @description 입력한 게시판이 테이블에 존재하는 게시판인지 확인합니다.
+ * @param {string} postType 게시판 종류
+ * @throws {NotFoundError} 입력된 게시판 종류가 테이블에 존재하지 않음
+ * @returns {boolean} 게시판 유효성 검사 확인 걸과
  */
-const validatePostFields = (post) => {
-  if (post.title === "" || post.type === "" || post.content === "") {
-    throw new BadRequestError('입력 값이 유효하지 않습니다.');
+const validatePostType = (postType) => {
+  if (postTypes.includes(postType)) {
+    throw new NotFoundError('This postType doesn\'t exist in posts.type')
   }
+
+  return true;
 }
 
 /**
- * @description 유저는 운영, 공지사항 게시판 작성 권한 없음
- * @param {string} userRole
- * @param {string} postType
- * @throws {ForbiddenError}
+ * @description 게시글 입력 값의 유효성을 확인합니다.
+ * @param {Object} post 게시글 입력 값
+ * @throws {BadRequestError} 제목 | 게시판 종류 | 내용이 입력되지 않음
+ * @returns {boolean} 유효성 검사 결과
+ */
+const validatePostFields = (post) => {
+  const {title, type, content} = post;
+
+  if (!title || !type || !content) {
+    throw new BadRequestError("Post values cannot be empty");
+  }
+
+  return true;
+}
+
+/**
+ * @description 유저가 게시글 작성 권한을 가졌는지 확인합니다.
+ * @param {string} userRole 유저의 권한
+ * @param {string} postType 게시판 종류
+ * @throws {ForbiddenError} 게시글 작성 권한이 없는 유저
+ * @return {boolean} 게시글 작성 권한 확인 결과
  */
 const hasRoleToPost = (userRole, postType) => {
-  if (userRole === USER && postType !== FREE) {
-    throw ForbiddenError('게시판 접근 권한이 없는 유저입니다');
+  if (userRole === userRoleUser && postType !== postTypeFree) {
+    throw ForbiddenError('Access denied You are not authorized to access this page');
   }
+
+  return true;
+}
+
+/**
+ * @description 유저의 게시글 수정, 삭제 권한을 확인합니다.
+ * @param {string} userRole 유저의 권한
+ * @param {string} expectedUserName 현재 접속한 유저의 id
+ * @param {string} actualUserName 게시글을 작성한 유저의 id
+ * @throws {BadRequestError} 유저는 해당 게시글 수정, 삭제 권한이 없음
+ * @returns {boolean} 게시글 수정, 삭제 권한을 확인 결과
+ */
+const hasRoleToUpdateOrDelete = (userRole,
+                                 expectedUserName,
+                                 actualUserName) => {
+  if (userRole === userRoleUser &&
+    expectedUserName !== actualUserName) {
+    throw new BadRequestError('Access denied You are not authorized to update or delete this post.');
+  } else {
+    return true;
+  }
+};
+
+/**
+ * @description 유저의 읽기 권한을 확인합니다.
+ * @param {string} userRole 유저의 권한
+ * @param {string} postType 게시판 종류
+ * @throws {ForbiddenError} 읽기 권한이 없는 유저
+ * @returns {boolean} 읽기 권한 확인 결과
+ */
+const hasRoleToRead = (userRole, postType) => {
+  if (userRole !== userRoleAdmin || postType === postTypeOperation) {
+    throw new ForbiddenError(`${userRole} doesn't have a Permission to read ${postType}`);
+  }
+
+  return true;
 }
 
 /**
@@ -53,15 +99,19 @@ const hasRoleToPost = (userRole, postType) => {
  */
 exports.createPost = async (post, userId) => {
 
-  const user = await UserModel.findByPk(1);
+  const user = await UserModel.findByPk(userId)
+    .catch((err) => {
+      throw new Error(err);
+    });
 
-  hasRoleToPost(user.role, post.type);
-  validatePostFields(post);
+  await Promise.all([
+    validatePostType(post.type),
+    hasRoleToPost(user.role, post.type),
+    validatePostFields(post)
+  ]);
 
   /**
    * @type {{
-   *  updated_at: Date,
-   *  created_at: Date,
    *  title: string,
    *  type: string,
    *  username: string,
@@ -72,7 +122,7 @@ exports.createPost = async (post, userId) => {
     title: post.title,
     content: post.content,
     type: post.type,
-    username: userId
+    username: user.username
   };
 
   return PostModel.create(newPost);
