@@ -1,4 +1,4 @@
-const {UserModel} = require('./userModel');
+const {UserModel} = require('../../model/index');
 const {BadRequestError, UnauthorizedError} = require('../../errors/httpErrors');
 const {secretKey,option} = require('../../config/jwt.config')
 const bcrypt = require ('bcrypt')
