@@ -28,11 +28,9 @@ const router = express.Router();
 
 router.post('/signUp', async (req, res, next) => {
   const {name, birthday, gender, phoneNumber, username, password} = req.body;
-
   try {
-    await userService.validateUserId(username);
-    await userService.signUp(name, birthday, gender, phoneNumber, username, password);
-
+    await userService.signUp(name, username, birthday, gender, phoneNumber, password);
+    
     res.status(200).json({
       success: true,
       message: `회원가입이 완료되었습니다.`
@@ -47,15 +45,14 @@ router.post('/signUp', async (req, res, next) => {
  * @todo 회원 로그인 기능 구현
  */
 
-router.post('/login', async (req, res, next) => {
+ router.post('/login', async (req, res, next) => {
     const {username, password} = req.body;
-
     try {
-      await userService.login(username, password);
-
-      res.status(200).json({
-        success: true,
-        message: `로그인이 완료되었습니다.`
+        const token = await userService.login(username, password);
+        
+        res.token = token;
+        res.status(200).json({
+        message:`로그인이 완료되었습니다.`,
       });
     } catch (e) {
       next(e);
@@ -67,7 +64,7 @@ router.post('/login', async (req, res, next) => {
  * */
 
 router.delete('/delete', async (req, res, next) => {
-    const username = req.username;
+    const username = req.user.username;
     
     try {
       await userService.deleteUser(username);
@@ -81,6 +78,7 @@ router.delete('/delete', async (req, res, next) => {
     }
 });
 
+
 /**
  * @todo 회원 등급변경
  * */
@@ -89,7 +87,6 @@ router.patch('/role', async (req, res, next) => {
     const {username, role} = req.body;
     
     try {
-      await userService.validateUserRole(req.role, 'admin'); // 운영진 등급인지 확인
       await userService.editUserRole(username, role);
 
       res.status(200).json({
