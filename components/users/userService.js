@@ -92,30 +92,32 @@ const verify = async (token) => {
 /**
  * @todo 회원 생성 signUp 메서드 
  * @param {string} name 
- * @param {??} birthday //이건 저도 어떤타입인지..
+ * @param {Date} birthday
  * @param {string} gender 
  * @param {string} phoneNumber
  * @param {string} username 
  * @param {string} password 
- * @returns {json} 
+ * @returns {} 
  */
-exports.signUp = async (name, username, birthday, gender, phoneNumber,  password) => {
-    if(validateUserId){
-        return UnauthorizedError('같은 아이디가 존재합니다.');
+ exports.signUp = async (name, username, birthday, gender, phoneNumber,  password) => {
+    const aa = await validateUserId(username, phoneNumber)
+    if(aa){
+        throw new UnauthorizedError('username or phoneNumber already exists');
     }
-    const newUser = await User.create({
+    const hash = await hashPassword(password)
+    const newUser = await UserModel.create({
         name: name,
         username: username,
-        password:hashPassword(password),
-        phone_number : phoneNumber,
-        // role:,
-        gender:gender,
+        password:hash,
+        phoneNumber : phoneNumber,
+        role:"user",
+        //gender:gender,
         birthday:birthday,
-        last_login_date : new Date(), // 되나??
+        lastLoginDate : new Date(), // 되나??
     }).catch((err) => {
-        return BadRequestError(err)
+        throw new BadRequestError(err)
     });
-    return res.status(200).json({newUser})
+    return newUser
 }
 
 /**
@@ -205,20 +207,24 @@ exports.validateUserRole = async (userRole, requireRole) => {
     });
 } 
 
-
 /**
- * 이거는 api 에서 안쓰고 서비스 내부에서 해결 가느ㅡㅇ할듯???
  * @todo 회원 중복아이디 확인 validateUserId 메서드
  * @param {string} username 
  * @returns {boolean} 
  */
 
-exports.validateUserId = async (username) => {
-    return await User.findOne({
+ const validateUserId = async (username,phoneNumber) => {
+    const du =  await UserModel.findOne({
         where: {
-            username: username
+            [Op.or]: [
+            { username: username},
+            { phoneNumber : phoneNumber }
+        ],
         }
     }).catch((err) => {
-        return next(err);
+        throw new BadRequestError('bed request');
     });
+    console.log("중복된 데이터",du)
+    return du
+
 }
