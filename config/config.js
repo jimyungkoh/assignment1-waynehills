@@ -1,4 +1,8 @@
-require("dotenv").config();
+//require("dotenv").config();
+//const path = require('path');
+require('dotenv').config({ path: __dirname + "/dev.env" });
+
+
 
 const env = process.env;
 
@@ -34,4 +38,13 @@ const test = {
   logging: false,
 };
 
-module.exports = { development, production, test, PORT };
+jwtConfig= {
+  secretKey : env.secret,
+  option: {
+      algorithm: 'HS256',
+      expiresIn: env.expiresIn,
+      issuer: env.issuer,
+  }
+}
+
+module.exports = { development, production, test, PORT,jwtConfig};
