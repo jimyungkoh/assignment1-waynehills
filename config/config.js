@@ -34,4 +34,6 @@ const test = {
   logging: false,
 };
 
-module.exports = { development, production, test, PORT };
+const SECRET_KEY = env.SECRET_KEY;
+
+module.exports = { development, production, test, PORT, SECRET_KEY };
