@@ -1,6 +1,6 @@
 const {UserModel} = require('../../model/index');
 const {BadRequestError, UnauthorizedError} = require('../../errors/httpErrors');
-const {secretKey,option} = require('../../config/jwt.config')
+const {jwtConfig} = require('../../config/config')
 const bcrypt = require ('bcrypt')
 const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken')
@@ -28,7 +28,7 @@ const jwt = require('jsonwebtoken')
         id : userId
     }
     const result = {
-        token : jwt.sign(payload, secretKey, option)
+        token : jwt.sign(payload, jwtConfig.secretKey, jwtConfig.option)
     }
     return result;
 }
