@@ -193,20 +193,21 @@ exports.editUserRole = async (username, role) => {
 }
 
 /**
- * 이거는 수정이 필요, 사용자 정보 & 요구되는 권한으로 확인해ㅐ야 함. ++ 이거는 미들웨어로 점검하는게 좋을 것 같은데 !
+ * MIDDLEWARE 로 빠질 예정
  * @todo 회원 권한확인 validateUserRole 메서드
  * @param {string} userRole 유저의 권한
  * @param {string} requireRole 요구되는 권한
- * @returns {???} 
+ * @returns {???} // 사용자 정보
  */
-exports.validateUserRole = async (userRole, requireRole) => {
-    return await User.findOne({
-        where: {
-            role: requireRole
-        }
-    }).catch((err) => {
-        return next(err);
-    });
+ exports.validateUserRole = async (req,res,next) => {
+    const userId = await verify(req.header('token'));
+    console.log("token",req.header('token'))
+    console.log("userId",userId.id)
+    const user = await UserModel.findByPk(userId.id)
+    if(!user){
+        return res.status(401).json({message: 'User not found'});
+    }
+    return user.dataValues
 } 
 
 /**
