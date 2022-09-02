@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const logger = require("morgan");
+const userRouter = require("./components/users/userApi");
 
 const { PORT } = require("./config/config.js");
 const { sequelize } = require("./model");
@@ -13,6 +14,7 @@ const { sequelize } = require("./model");
  */
 function loader(app) {
   app.use(express.json());
+  app.use(express.urlencoded({extended: true}));
   app.use(cors());
   app.use(logger("combined"));
 
@@ -25,7 +27,7 @@ function loader(app) {
  * @returns {*}
  */
 function registerRouters(app) {
-  // app.use('/components/user/...', routers.xxApi);
+  app.use('/users', userRouter);
   return app;
 }
 /**
