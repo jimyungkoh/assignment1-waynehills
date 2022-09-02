@@ -2,6 +2,8 @@ const {UserModel} = require('./userModel');
 const {BadRequestError, UnauthorizedError} = require('../../errors/httpErrors');
 const {secretKey,option} = require('../../config/jwt.config')
 const bcrypt = require ('bcrypt')
+const { Op } = require('sequelize');
+const jwt = require('jsonwebtoken')
 
 
 /**
