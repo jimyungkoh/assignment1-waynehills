@@ -151,30 +151,17 @@ const verify = async (token) => {
 
 
 /**
- * 논리적 삭제 메서드 : deleteUser
- * @todo 회원 삭제 deleteUser 메서드
- * @param {string} username 
- * @returns {???} // 제 생각은 없어도 될듯 합니다만,,
- */
-exports.deleteUser = async (username) => {
-    await User.update({ deleted_at: new Date() }, 
-        { where: { 
-            username : username
-            } 
-        });  
+ * 사용자 탈퇴
+ * destore(시퀄에서 삭제 orm)사용하면 데이터 그대로 남고 deletedAt 만 쿼리날린 시간으로 업데이트
+ * @param {string} username
+ */ 
+ exports.deleteUser = async (username) => {
+    const destroyResult = await UserModel.destroy({where: {username: username}});
+
+    if (!destroyResult) {
+        throw new BadRequestError(`${username} doesn't exist in user table`);
+    }
 }
-/**
- * 삭제 메서드 예시
- * - 삭제 메서드의 호출 주체는 userApi(route)입니다.
- * @param {string} user_id '유저가 설정한' 메서드입니다.
- * exports.delete = async (user_id) => {
- *   const destroyResult = await OpeningModel.destroy({where: {id: id}});
- *
- *   if (!destroyResult) {
- *     throw NotFoundError(`${user_id} doesn't exist in opening table`);
- *   }
- * }
- */
 
 
 /**
