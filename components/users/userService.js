@@ -3,6 +3,7 @@ const {BadRequestError, UnauthorizedError} = require('../../errors/httpErrors');
 const {secretKey,option} = require('../../config/jwt.config')
 const bcrypt = require ('bcrypt')
 
+
 /**
  * 입력된 패스워드는 암호화해 저장 : hashPassword 
  * @param {string} password 
@@ -16,11 +17,11 @@ const bcrypt = require ('bcrypt')
 }
 
 /**
- * jwt token 을 만드는 메서드 : jwt
- * @param {int} id 
+ * jwt token 을 만드는 메서드 : makeToken
+ * @param {number} id 
  * @returns {}
  */
-const jwt = async (userId) =>{
+ const makeToken = async (userId) =>{
     const payload = {
         id : userId
     }
@@ -29,6 +30,7 @@ const jwt = async (userId) =>{
     }
     return result;
 }
+
 /**
  * 토큰을 통해 다시 사용자id를 불러오는 메서드 : verify
  * @param {string} token 
@@ -124,26 +126,26 @@ const verify = async (token) => {
  * @todo 회원 로그인 login 메서드
  * @param {string} username 
  * @param {string} password
- * @returns {???} // 제 생각은 없어도 될듯 합니다만,,
+ * @returns {string} // login 성공시 사용자 정보 전달
  */ 
-// login 성공시 req에 username과 role을 추가해주세요.
-// ex))
-// req.username = username;
-// req.role = 'admin'
-exports.login = async (username, password) => {
+
+ exports.login = async (username, password) => {
     const correctUser = await findUser(username, password);
-
+    console.log("correctUser : ",correctUser)
     if(correctUser){
-        const jwtToken = await jwt.sign(correctUser.dataValues.id);
-
-        return res.status(200).json({
-            user: authenticatedUser,
+        const jwtToken = await makeToken(correctUser.dataValues.id);
+        console.log("jwtToken",jwtToken)
+        const result ={
             token: jwtToken,
             correctUser:correctUser.dataValues
-        });
+        }
+        
+        return correctUser.dataValues
     }
-
-    return UnauthorizedError('아이디와 비밀번호를 확인해 주세요');
+    else {
+        throw new BadRequestError('cant find user');
+    }
+    
 
 }
 
