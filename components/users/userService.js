@@ -169,18 +169,31 @@ exports.deleteUser = async (username) => {
  * @todo 회원 권한변경 editUserRole 메서드
  * @param {string} username
  * @param {string} role
- * @returns {???} // 제 생각은 없어도 될듯 합니다만,,
+ * @returns
  */
 exports.editUserRole = async (username, role) => {
-  await User.update(
+  await UserModel.update(
     { role: role },
     {
       where: {
         username: username,
       },
     }
-  );
-  return res.status(200).json({ message: "권한 수정됨" });
+  ).catch((err) => {
+    throw new Error(err);
+  });
+
+  const updateRole = await UserModel.findOne({
+    where: {
+      username: username,
+    },
+  }).catch((err) => {
+    throw new Error(err);
+  });
+  if (!updateRole) {
+    throw new BadRequestError(`${username} doesn't exist in user table`);
+  }
+  return updateRole;
 };
 
 /**
