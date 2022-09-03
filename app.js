@@ -15,7 +15,7 @@ const { errorLogger, errorResponder } = require("./middlewares/error.js");
  */
 function loader(app) {
   app.use(express.json());
-  app.use(express.urlencoded({extended: true}));
+  app.use(express.urlencoded({ extended: true }));
   app.use(cors());
   app.use(logger("combined"));
 
@@ -28,7 +28,7 @@ function loader(app) {
  * @returns {*}
  */
 function registerRouters(app) {
-  app.use('/users', userRouter);
+  app.use("/users", userRouter);
   return app;
 }
 

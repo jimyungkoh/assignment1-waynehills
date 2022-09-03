@@ -1,5 +1,5 @@
-const {UserModel} = require('./userModel');
-const {NotFoundError} = require('../../errors/httpErrors');
+const { UserModel } = require("./userModel");
+const { NotFoundError } = require("../../errors/httpErrors");
 
 /**
  * 삭제 메서드 예시
@@ -18,7 +18,6 @@ const {NotFoundError} = require('../../errors/httpErrors');
  * @todo 회원 생성 메서드 생성
  */
 
-
 /**
  * @todo 회원 삭제 메서드
  */
@@ -30,4 +29,3 @@ const {NotFoundError} = require('../../errors/httpErrors');
 /**
  * @todo 회원 validateRole 메서드
  */
-
