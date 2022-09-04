@@ -4,7 +4,6 @@ const {
   BadRequestError,
   ForbiddenError,
 } = require("../../errors/httpErrors");
-const { Op } = require("sequelize");
 
 // 0: free, 1: notice, 2: operation
 const postTypes = PostModel.getAttributes().type.values;
@@ -271,11 +270,5 @@ exports.deletePost = async (postId, userId) => {
 
   hasRoleToUpdateOrDelete(user.role, userId, post.userId);
 
-  const deletedAt = new Date();
-
-  await post.update({ deletedAt: deletedAt });
-
-  await post.save();
-
-  return true;
+  return !!(await post.destroy());
 };
