@@ -9,8 +9,8 @@ const jwt = require("jsonwebtoken");
  */
 const userAuthChecker = (roles) => {
   return async (req, res, next) => {
-    const token = req.headers.authorization;
     try {
+      const token = req.headers.authorization;
       const userId = await jwt.verify(token, secretKey, option); // 토큰 복호화
       const user = await UserModel.findByPk(userId); // 복호화된 Id를 통해 유저 정보 얻기
       if (!user) {
