@@ -144,17 +144,6 @@ exports.editUserRole = async (username, role) => {
     throw new Error(err);
   });
 
-  const updateRole = await UserModel.findOne({
-    where: {
-      username: username,
-    },
-  }).catch((err) => {
-    throw new Error(err);
-  });
-  if (!updateRole) {
-    throw new BadRequestError(`${username} doesn't exist in user table`);
-  }
-  return updateRole;
 };
 
 /**
