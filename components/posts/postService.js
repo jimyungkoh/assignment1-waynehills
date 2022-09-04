@@ -191,7 +191,7 @@ exports.readPostsByType = async (userId, postType, skip, limit) => {
  * @param limit pageSize
  * @returns {Promise<Object>}
  */
-exports.readAllPost = async (userId, skip, limit) => {
+exports.readPosts = async (userId, skip, limit) => {
   const user = UserModel.findByPk(userId).catch((err) => {
     throw new Error(err);
   });
