@@ -141,7 +141,7 @@ exports.createPost = async (post, userId) => {
  * @param {number} userId 유저 id
  * @returns {Promise<Object>}
  */
-exports.readOnePost = async (postId, userId) => {
+exports.readPost = async (postId, userId) => {
   const user = await UserModel.findByPk(userId).catch((err) => {
     throw new Error(err);
   });
