@@ -183,3 +183,27 @@ exports.readPostsByType = async (userId, postType, skip, limit) => {
     attributes: { exclude: ["content"] },
   });
 };
+
+/**
+ * @description 관리자가 호출 가능한 모든 포스트 가져오기 메서드입니다.
+ * @param userId 유저의 id
+ * @param skip @param userId
+ * @param limit pageSize
+ * @returns {Promise<Object>}
+ */
+exports.readAllPost = async (userId, skip, limit) => {
+  const user = UserModel.findByPk(userId).catch((err) => {
+    throw new Error(err);
+  });
+
+  hasRoleToRead(user.role, postTypeOperation);
+
+  return await PostModel.findAll({
+    raw: true,
+    offset: skip,
+    limit: limit,
+    attributes: { exclude: ["content"] },
+  }).catch((err) => {
+    throw new Error(err);
+  });
+};
