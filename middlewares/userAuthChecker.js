@@ -8,9 +8,9 @@ const jwt = require("jsonwebtoken");
  * @param {string} token jwt 토큰을 받아옵니다.
  * @returns {int}
  */
-const verify = async (token) => {
+const verify = (token) => {
   try {
-    const decoded = await jwt.verify(token, jwtConfig.secretKey, jwtConfig.option);
+    const decoded = jwt.verify(token, jwtConfig.secretKey, jwtConfig.option);
     return decoded;
   } catch (err) {
     if (err.message === "jwt expired") {
@@ -45,7 +45,7 @@ const userAuthChecker = (roles) => {
   return async (req, res, next) => {
     try {
       const token = req.headers.authorization;
-      const userId = await verify(token); // 토큰 복호화
+      const userId = verify(token); // 토큰 복호화
       const userInfo = await UserModel.findByPk(userId); // 복호화된 Id를 통해 유저 정보 얻기
       if (!userInfo) {
         throw new BadRequestError(`Can't find user`);
