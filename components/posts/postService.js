@@ -209,7 +209,7 @@ exports.readAllPost = async (userId, skip, limit) => {
 };
 
 /**
- *
+ * @description 포스트 내용을 갱신합니다.
  * @param postId 포스트 id
  * @param newPost 업데이트 할 포스트 내용
  * @param userId 유저 id
