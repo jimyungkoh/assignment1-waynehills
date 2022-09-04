@@ -207,3 +207,40 @@ exports.readAllPost = async (userId, skip, limit) => {
     throw new Error(err);
   });
 };
+
+/**
+ *
+ * @param postId 포스트 id
+ * @param newPost 업데이트 할 포스트 내용
+ * @param userId 유저 id
+ * @returns {Promise<boolean>} 포스트 업데이트 결과
+ */
+exports.updatePost = async (postId, newPost, userId) => {
+  const originalPost = PostModel.findByPk(postId).catch((err) => {
+    throw new Error(err);
+  });
+
+  if (!originalPost) {
+    throw new NotFoundError(`${postId} doesn't exist in posts`);
+  }
+
+  const user = await UserModel.findByPk(userId).catch((err) => {
+    throw new Error(err);
+  });
+
+  hasRoleToUpdateOrDelete(user.role, userId, originalPost.userId);
+
+  const title = newPost.title ? newPost.title : originalPost.title;
+  const content = newPost.content ? newPost.content : originalPost.content;
+  const type = newPost.type ? newPost.type : originalPost.type;
+
+  await PostModel.update({
+    title: title,
+    content: content,
+    type: type,
+  }).catch((err) => {
+    throw new Error(err);
+  });
+
+  return true;
+};
