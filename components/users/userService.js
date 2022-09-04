@@ -9,33 +9,6 @@ const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
 
 /**
- * 입력된 패스워드는 암호화해 저장 : hashPassword
- * @param {string} password
- * @returns {string}
- */
-hashPassword = async (password) => {
-  const hash = await bcrypt.hash(password, 12);
-  console.log("hash : ", hash);
-  console.log("typeof hash : ", typeof hash);
-  return hash;
-};
-
-/**
- * jwt token 을 만드는 메서드 : makeToken
- * @param {number} id
- * @returns {}
- */
-const makeToken = async (userId) => {
-  const payload = {
-    id: userId,
-  };
-  const result = {
-    token: jwt.sign(payload, jwtConfig.secretKey, jwtConfig.option),
-  };
-  return result;
-};
-
-/**
  * 테이블에 username과 password가 같은 항목을 찾는(로그인을 위한) 메서드 : findUser
  * @param {string} username
  * @param {string} password
@@ -95,7 +68,7 @@ exports.signUp = async (
   if (aa) {
     throw new BadRequestError("username or phoneNumber already exists");
   }
-  const hash = await hashPassword(password);
+  const hash = await bcrypt.hash(password, 12);
   const newUser = await UserModel.create({
     name: name,
     username: username,
@@ -123,7 +96,15 @@ exports.login = async (username, password) => {
   const correctUser = await findUser(username, password);
   console.log("correctUser : ", correctUser);
   if (correctUser) {
-    const jwtToken = await makeToken(correctUser.dataValues.id);
+    const jwtToken = {
+      token: jwt.sign(
+        {
+          id: correctUser.dataValues.id,
+        },
+        jwtConfig.secretKey,
+        jwtConfig.option
+      ),
+    };
     console.log("jwtToken", jwtToken);
     return jwtToken;
   } else {
