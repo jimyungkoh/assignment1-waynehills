@@ -121,7 +121,7 @@ exports.createPost = async (post, userId) => {
    * @type {{
    *  title: string,
    *  type: string,
-   *  username: string,
+   *  userId: number,
    *  content: string
    * }}
    */
@@ -129,7 +129,7 @@ exports.createPost = async (post, userId) => {
     title: post.title,
     content: post.content,
     type: post.type,
-    username: user.username,
+    userId: user.id,
   };
 
   return PostModel.create(newPost);
