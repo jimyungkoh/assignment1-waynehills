@@ -1,8 +1,6 @@
 //require("dotenv").config();
 //const path = require('path');
-require('dotenv').config({ path: __dirname + "/dev.env" });
-
-
+require("dotenv").config({ path: __dirname + "/dev.env" });
 
 const env = process.env;
 
@@ -38,13 +36,13 @@ const test = {
   logging: false,
 };
 
-jwtConfig= {
-  secretKey : env.secret,
+jwtConfig = {
+  secretKey: env.JWT_SECRET,
   option: {
-      algorithm: 'HS256',
-      expiresIn: env.expiresIn,
-      issuer: env.issuer,
-  }
-}
+    algorithm: "HS256",
+    expiresIn: env.JWT_EXPIRES_IN,
+    issuer: env.JWT_ISSUER,
+  },
+};
 
-module.exports = { development, production, test, PORT,jwtConfig};
+module.exports = { development, production, test, PORT, jwtConfig };
