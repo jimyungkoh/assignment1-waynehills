@@ -147,9 +147,7 @@ exports.readOnePost = async (postId, userId) => {
     throw new Error(err);
   });
 
-  const post = await PostModel.findByPk(postId, {
-    raw: true,
-  }).catch((err) => {
+  const post = await PostModel.findByPk(postId).catch((err) => {
     throw new Error(err);
   });
 
@@ -180,7 +178,6 @@ exports.readPostsByType = async (userId, postType, skip, limit) => {
   hasRoleToRead(user.role, postType);
 
   return await PostModel.findAll({
-    raw: true,
     offset: skip,
     limit: limit,
     where: { type: postType },
@@ -203,7 +200,6 @@ exports.readAllPost = async (userId, skip, limit) => {
   hasRoleToRead(user.role, postTypeOperation);
 
   return await PostModel.findAll({
-    raw: true,
     offset: skip,
     limit: limit,
     attributes: { exclude: ["content"] },
