@@ -169,7 +169,7 @@ exports.readOnePost = async (postId, userId) => {
  * @param limit pageSize
  * @returns {Promise<Object>}
  */
-exports.readPostsByType = async (userId, postType, skip, limit) => {
+exports.readPostsByType = async (userId, postType, skip = 0, limit = 10) => {
   const user = await UserModel.findByPk(userId).catch((err) => {
     throw new Error(err);
   });
@@ -191,7 +191,7 @@ exports.readPostsByType = async (userId, postType, skip, limit) => {
  * @param limit pageSize
  * @returns {Promise<Object>}
  */
-exports.readPosts = async (userId, skip, limit) => {
+exports.readPosts = async (userId, skip = 0, limit = 10) => {
   const user = UserModel.findByPk(userId).catch((err) => {
     throw new Error(err);
   });
