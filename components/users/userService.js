@@ -27,7 +27,6 @@ const findUser = async (username, password) => {
     throw new BadRequestError("username Error");
   }
   if (passwordsAreEqual(password, find.password)) {
-    console.log("find", find);
     return find;
   } else {
     throw new BadRequestError("password Error");
@@ -94,7 +93,6 @@ exports.signUp = async (
 
 exports.login = async (username, password) => {
   const correctUser = await findUser(username, password);
-  console.log("correctUser : ", correctUser);
   if (correctUser) {
     const jwtToken = {
       token: jwt.sign(
@@ -105,7 +103,6 @@ exports.login = async (username, password) => {
         jwtConfig.option
       ),
     };
-    console.log("jwtToken", jwtToken);
     return jwtToken;
   } else {
     throw new BadRequestError("cant find user");
@@ -174,6 +171,5 @@ const validateUserId = async (username, phoneNumber) => {
   }).catch((err) => {
     throw new Error(err);
   });
-  console.log("중복된 데이터", du);
   return du;
 };
