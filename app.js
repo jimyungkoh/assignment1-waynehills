@@ -2,10 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const logger = require("morgan");
 const userRouter = require("./components/users/userApi");
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
 
+const swaggerFile = YAML.load("./swagger/swagger-output.yaml");
 const { PORT } = require("./config/config.js");
 const { sequelize } = require("./model");
-const { errorLogger, errorResponder } = require("./middlewares/error.js");
+const { errorLogger, errorResponder } = require("./middlewares/errorhandler");
 
 /**
  * express middleware를 사용합니다.
@@ -15,9 +18,14 @@ const { errorLogger, errorResponder } = require("./middlewares/error.js");
  */
 function loader(app) {
   app.use(express.json());
-  app.use(express.urlencoded({extended: true}));
+  app.use(express.urlencoded({ extended: true }));
   app.use(cors());
   app.use(logger("combined"));
+  app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerFile, { explorer: true })
+  );
 
   return app;
 }
@@ -28,7 +36,7 @@ function loader(app) {
  * @returns {*}
  */
 function registerRouters(app) {
-  app.use('/users', userRouter);
+  app.use("/users", userRouter);
   return app;
 }
 

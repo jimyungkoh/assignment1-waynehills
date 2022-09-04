@@ -1,0 +1,163 @@
+openapi: 3.0.0
+info:
+  title: This is my API Document
+  description: 이렇게 스웨거 자동생성이 됩니다.
+  version: 1.0.0
+servers:
+  - url: "http://localhost:3000"
+paths:
+  /users/signUp:
+    post:
+      tags:
+        - Users
+      description: 회원가입
+      parameters:
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: true
+          description: 회원의 실명
+        - in: query
+          name: birthday
+          schema:
+            type: string
+          required: true
+          description: 회원의 생일
+        - in: query
+          name: gender
+          schema:
+            type: string
+          required: true
+          description: 회원의 성별
+        - in: query
+          name: phoneNumber
+          schema:
+            type: string
+          required: true
+          description: 회원의 전화번호
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+          description: 회원의 아이디
+        - in: query
+          name: password
+          schema:
+            type: string
+          required: true
+          description: 회원의 비밀번호
+      responses:
+        "201":
+          description: "회원가입이 완료되었습니다."
+        "400":
+          description: "username or phoneNumber already exists"
+        "500":
+          description: "Server Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  example: 김아무개
+                birthday:
+                  example: 20220101
+                gender:
+                  example: 남
+                phoneNumber:
+                  example: 010-1234-5678
+                username:
+                  example: ahmoogae
+                password:
+                  example: ahmoogae1!
+  /users/login:
+    post:
+      tags:
+        - Users
+      description: 로그인
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+          description: 회원의 아이디
+        - in: query
+          name: password
+          schema:
+            type: string
+          required: true
+          description: 회원의 비밀번호
+      responses:
+        "201":
+          description: "로그인이 완료되었습니다."
+        "400":
+          description: "cant find user"
+        "500":
+          description: "Server Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  example: ahmoogae
+                password:
+                  example: ahmoogae1
+  /users/delete:
+    delete:
+      tags:
+        - Users
+      description: 회원탈퇴
+      parameters: []
+      responses:
+        "200":
+          description: "회원탈퇴가 완료되었습니다."
+        "400":
+          description: "${username} doesn't exist in user table"
+        "500":
+          description: "Server Error"
+  /users/role:
+    patch:
+      tags:
+        - Users
+      description: 회원권한 변경
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+          description: 권한 변경할 회원의 아이디
+        - in: query
+          name: role
+          schema:
+            type: string
+          required: true
+          description: 변경할 권한
+      responses:
+        "200":
+          description: "${username}의 회원 등급 변경이 완료되었습니다."
+        "500":
+          description: "Server Error"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  example: ahmoogae
+                role:
+                  example: admin
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      in: header
+      bearerFormat: JWT
