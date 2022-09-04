@@ -1,6 +1,6 @@
 const { BadRequestError, ForbiddenError } = require("../errors/httpErrors");
 const UserModel = require("../model/index");
-const { secretKey, option } = require("../config/config");
+const { jwtConfig } = require("../config/config");
 const jwt = require("jsonwebtoken");
 
 /**
@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken");
  */
 const verify = async (token) => {
   try {
-    const decoded = await jwt.verify(token, secretKey, option);
+    const decoded = await jwt.verify(token, jwtConfig.secretKey, jwtConfig.option);
     return decoded;
   } catch (err) {
     if (err.message === "jwt expired") {
