@@ -156,8 +156,11 @@ exports.readOnePost = async (postId, userId) => {
   // eslint-disable-next-line no-undef
   hasRoleToRead(user.role, post.type);
 
-  if (!post) throw new NotFoundError(`${postId} doesn't exist in posts`);
-
+  if (!post) {
+    throw new NotFoundError(
+      `The requested URL /${postId} was not found on this server.`
+    );
+  }
   return post;
 };
 
@@ -222,7 +225,9 @@ exports.updatePost = async (postId, newPost, userId) => {
   });
 
   if (!originalPost) {
-    throw new NotFoundError(`${postId} doesn't exist in posts`);
+    throw new NotFoundError(
+      `The requested URL /${postId} was not found on this server.`
+    );
   }
 
   const user = await UserModel.findByPk(userId).catch((err) => {
@@ -259,7 +264,10 @@ exports.deletePost = async (postId, userId) => {
     throw new Error(err);
   });
 
-  if (!post) throw new NotFoundError(`${postId} doesn't exist in posts`);
+  if (!post)
+    throw new NotFoundError(
+      `The requested URL /${postId} was not found on this server.`
+    );
 
   const user = await UserModel.findByPk(userId).catch((err) => {
     throw new Error(err);
