@@ -4,6 +4,7 @@ const {
   BadRequestError,
   ForbiddenError,
 } = require("../../errors/httpErrors");
+const { Op } = require("sequelize");
 
 // 0: free, 1: notice, 2: operation
 const postTypes = PostModel.getAttributes().type.values;
@@ -158,4 +159,27 @@ exports.readOnePost = async (postId, userId) => {
   if (!post) throw new NotFoundError(`${postId} doesn't exist in posts`);
 
   return post;
+};
+
+/**
+ * @description 게시판에 맞추어 여러 개의 포스트를 반환합니다.
+ * @param userId 유저 id
+ * @param postType 게시판 유형
+ * @param skip page * pageSize
+ * @param limit pageSize
+ * @returns {Promise<Object>}
+ */
+exports.readPostsByType = async (userId, postType, skip, limit) => {
+  const user = await UserModel.findByPk(userId).catch((err) => {
+    throw new Error(err);
+  });
+
+  hasRoleToRead(user.role, postType);
+
+  return await PostModel.findAll({
+    raw: true,
+    offset: skip,
+    limit: limit,
+    attributes: { exclude: ["content"] },
+  });
 };
