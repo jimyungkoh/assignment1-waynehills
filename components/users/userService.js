@@ -36,28 +36,6 @@ const makeToken = async (userId) => {
 };
 
 /**
- * 토큰을 통해 다시 사용자id를 불러오는 메서드 : verify
- * @param {string} token
- * @returns {int}
- */
-const verify = async (token) => {
-  let decoded;
-  try {
-    decoded = await jwt.verify(token, secretKey, option);
-  } catch (err) {
-    if (err.message === "jwt expired") {
-      console.log("expired token");
-      return "TOKEN_EXPIRED";
-    } else {
-      console.log("invalid token");
-      return "TOKEN_INVALID";
-    }
-  }
-
-  return decoded;
-};
-
-/**
  * 테이블에 username과 password가 같은 항목을 찾는(로그인을 위한) 메서드 : findUser
  * @param {string} username
  * @param {string} password
@@ -124,7 +102,7 @@ exports.signUp = async (
     password: hash,
     phoneNumber: phoneNumber,
     role: "user",
-    //gender:gender,
+    gender: gender,
     birthday: birthday,
     lastLoginDate: new Date(), // 되나??
   }).catch((err) => {
@@ -199,25 +177,6 @@ exports.editUserRole = async (username, role) => {
     throw new BadRequestError(`${username} doesn't exist in user table`);
   }
   return updateRole;
-};
-
-/**
- * MIDDLEWARE 로 빠질 예정
- * @todo 회원 권한확인 validateUserRole 메서드
- * @param {string} userRole 유저의 권한
- * @param {string} requireRole 요구되는 권한
- * @returns {} // 사용자 정보
- * @throws {BadRequestError} id(PK)를 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
- */
-exports.validateUserRole = async (req, res, next) => {
-  const userId = await verify(req.header("token"));
-  console.log("token", req.header("token"));
-  console.log("userId", userId.id);
-  const user = await UserModel.findByPk(userId.id);
-  if (!user) {
-    throw new BadRequestError(`cant find user`);
-  }
-  return user.dataValues;
 };
 
 /**
