@@ -244,3 +244,33 @@ exports.updatePost = async (postId, newPost, userId) => {
 
   return true;
 };
+
+/**
+ * @description 포스트를 삭제하는 메서드입니다.
+ * @param {number} postId 삭제할 postId
+ * @param {number} userId 삭제를 시도하는 user의 Id
+ * @throws {NotFoundError} postId가 posts에 존재하지 않음
+ * @throws {ForbiddenError} post를 삭제할 권한이 없는 유저
+ * @returns {Promise<boolean>}
+ */
+exports.deletePost = async (postId, userId) => {
+  const post = await PostModel.findByPk(postId).catch((err) => {
+    throw new Error(err);
+  });
+
+  if (!post) throw new NotFoundError(`${postId} doesn't exist in posts`);
+
+  const user = await UserModel.findByPk(userId).catch((err) => {
+    throw new Error(err);
+  });
+
+  hasRoleToUpdateOrDelete(user.role, userId, post.userId);
+
+  const deletedAt = new Date();
+
+  await post.update({ deletedAt: deletedAt });
+
+  await post.save();
+
+  return true;
+};
