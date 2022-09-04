@@ -1,4 +1,4 @@
-const { BadRequestError, ForbiddenError } = require("../errors/httpErrors");
+const { BadRequestError, ForbiddenError, UnauthorizedError } = require("../errors/httpErrors");
 const UserModel = require("../model/index");
 const { jwtConfig } = require("../config/config");
 const jwt = require("jsonwebtoken");
