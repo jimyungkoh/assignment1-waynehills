@@ -97,7 +97,7 @@ const hasRoleToRead = (userRole, postType) => {
 /**
  * @description 게시글 등록 메서드
  * @param {Object} post HTTP post 메서드로 전달받을 req.body
- * @param {number} userId 유저 id
+ * @param {Object} user 유저 객체
  * @param {string} post.title 게시글 제목
  * @param {string} post.content 게시글 내용
  * @param {string} post.type 게시판 타입 (운영 게시판|공지|자유 게시판)
@@ -105,11 +105,7 @@ const hasRoleToRead = (userRole, postType) => {
  * @throws {BadRequestError} 원하지 않는 값이 들어왔을 때
  * @returns {Promise<Object>}
  */
-exports.createPost = async (post, userId) => {
-  const user = await UserModel.findByPk(userId).catch((err) => {
-    throw new Error(err);
-  });
-
+exports.createPost = async (post, user) => {
   // eslint-disable-next-line no-undef
   await Promise.all([
     validatePostType(post.type),
@@ -138,14 +134,12 @@ exports.createPost = async (post, userId) => {
 /**
  * @description postId에 해당하는 post를 반환합니다.
  * @param {number} postId 포스트 id
- * @param {number} userId 유저 id
+ * @param {Object} user 유저 객체
+ * @throws {ForbiddenError} 읽기 권한이 없는 유저
+ * @throws {NotFoundError} postId가 posts에 존재하지 않음
  * @returns {Promise<Object>}
  */
-exports.readPost = async (postId, userId) => {
-  const user = await UserModel.findByPk(userId).catch((err) => {
-    throw new Error(err);
-  });
-
+exports.readPost = async (postId, user) => {
   const post = await PostModel.findByPk(postId).catch((err) => {
     throw new Error(err);
   });
@@ -163,17 +157,14 @@ exports.readPost = async (postId, userId) => {
 
 /**
  * @description 게시판에 맞추어 여러 개의 포스트를 반환합니다.
- * @param userId 유저 id
- * @param postType 게시판 유형
- * @param skip page * pageSize
- * @param limit pageSize
+ * @param {Object} user 유저 객체
+ * @param {string} postType 게시판 유형
+ * @param {number} skip page * pageSize
+ * @param {number} limit pageSize
+ * @throws {ForbiddenError} 읽기 권한이 없는 유저
  * @returns {Promise<Object>}
  */
-exports.readPostsByType = async (userId, postType, skip = 0, limit = 10) => {
-  const user = await UserModel.findByPk(userId).catch((err) => {
-    throw new Error(err);
-  });
-
+exports.readPostsByType = async (user, postType, skip = 0, limit = 10) => {
   hasRoleToRead(user.role, postType);
 
   return await PostModel.findAll({
@@ -186,16 +177,13 @@ exports.readPostsByType = async (userId, postType, skip = 0, limit = 10) => {
 
 /**
  * @description 관리자가 호출 가능한 모든 포스트 가져오기 메서드입니다.
- * @param userId 유저의 id
- * @param skip @param userId
- * @param limit pageSize
+ * @param {Object} user 유저 객체
+ * @param {number} skip @param {Object} userId
+ * @param {number} limit pageSize
+ * @throws {ForbiddenError} 읽기 권한이 없는 유저
  * @returns {Promise<Object>}
  */
-exports.readPosts = async (userId, skip = 0, limit = 10) => {
-  const user = UserModel.findByPk(userId).catch((err) => {
-    throw new Error(err);
-  });
-
+exports.readPosts = async (user, skip = 0, limit = 10) => {
   hasRoleToRead(user.role, postTypeOperation);
 
   return await PostModel.findAll({
@@ -209,12 +197,14 @@ exports.readPosts = async (userId, skip = 0, limit = 10) => {
 
 /**
  * @description 포스트 내용을 갱신합니다.
- * @param postId 포스트 id
- * @param newPost 업데이트 할 포스트 내용
- * @param userId 유저 id
+ * @param {number} postId 포스트 id
+ * @param {Object} newPost 업데이트 할 포스트 내용
+ * @param {Object} user 유저 객체
+ * @throws {NotFoundError} postId가 posts에 존재하지 않음
+ * @throws {ForbiddenError} 유저는 해당 게시글 수정할 권한이 없음
  * @returns {Promise<boolean>} 포스트 업데이트 결과
  */
-exports.updatePost = async (postId, newPost, userId) => {
+exports.updatePost = async (postId, newPost, user) => {
   const originalPost = PostModel.findByPk(postId).catch((err) => {
     throw new Error(err);
   });
@@ -225,36 +215,27 @@ exports.updatePost = async (postId, newPost, userId) => {
     );
   }
 
-  const user = await UserModel.findByPk(userId).catch((err) => {
+  hasRoleToUpdateOrDelete(user.role, user.id, originalPost.userId);
+
+  const post = Object.assign(
+    originalPost,
+    Object.fromEntries(Object.entries(newPost).filter(([, value]) => !!value))
+  );
+
+  return !!(await PostModel.update(post).catch((err) => {
     throw new Error(err);
-  });
-
-  hasRoleToUpdateOrDelete(user.role, userId, originalPost.userId);
-
-  const title = newPost.title ? newPost.title : originalPost.title;
-  const content = newPost.content ? newPost.content : originalPost.content;
-  const type = newPost.type ? newPost.type : originalPost.type;
-
-  await PostModel.update({
-    title: title,
-    content: content,
-    type: type,
-  }).catch((err) => {
-    throw new Error(err);
-  });
-
-  return true;
+  }));
 };
 
 /**
  * @description 포스트를 삭제하는 메서드입니다.
  * @param {number} postId 삭제할 postId
- * @param {number} userId 삭제를 시도하는 user의 Id
+ * @param {Object} user user 객체
  * @throws {NotFoundError} postId가 posts에 존재하지 않음
- * @throws {ForbiddenError} post를 삭제할 권한이 없는 유저
+ * @throws {ForbiddenError} 유저는 해당 게시글 삭제할 권한이 없음
  * @returns {Promise<boolean>}
  */
-exports.deletePost = async (postId, userId) => {
+exports.deletePost = async (postId, user) => {
   const post = await PostModel.findByPk(postId).catch((err) => {
     throw new Error(err);
   });
@@ -264,11 +245,7 @@ exports.deletePost = async (postId, userId) => {
       `The requested URL /${postId} was not found on this server.`
     );
 
-  const user = await UserModel.findByPk(userId).catch((err) => {
-    throw new Error(err);
-  });
-
-  hasRoleToUpdateOrDelete(user.role, userId, post.userId);
+  hasRoleToUpdateOrDelete(user.role, user.id, post.userId);
 
   return !!(await post.destroy());
 };
