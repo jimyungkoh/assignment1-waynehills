@@ -180,6 +180,7 @@ exports.readPostsByType = async (userId, postType, skip, limit) => {
     raw: true,
     offset: skip,
     limit: limit,
+    where: { type: postType },
     attributes: { exclude: ["content"] },
   });
 };
