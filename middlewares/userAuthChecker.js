@@ -12,14 +12,14 @@ const userAuthChecker = (roles) => {
     try {
       const token = req.headers.authorization;
       const userId = await jwt.verify(token, secretKey, option); // 토큰 복호화
-      const user = await UserModel.findByPk(userId); // 복호화된 Id를 통해 유저 정보 얻기
-      if (!user) {
+      const userInfo = await UserModel.findByPk(userId); // 복호화된 Id를 통해 유저 정보 얻기
+      if (!userInfo) {
         throw new BadRequestError(`Can't find user`);
       }
       if (!roles.includes(user.role)) {
         throw new ForbiddenError(`User doesn't have authorization`);
       }
-      req.user = user;
+      req.user = userInfo;
       next();
     } catch (e) {
       next(e);
