@@ -87,6 +87,14 @@ exports.signUp = async (
 exports.login = async (username, password) => {
   const correctUser = await findUser(username, password);
   if (correctUser) {
+    await UserModel.update(
+      { lastLoginDate: new Date() },
+      {
+        where: {
+          id: correctUser.dataValues.id,
+        },
+      }
+    );
     const jwtToken = {
       token: jwt.sign(
         {
@@ -96,7 +104,13 @@ exports.login = async (username, password) => {
         jwtConfig.option
       ),
     };
-    return jwtToken;
+    const find = await UserModel.findOne({
+      where: {
+        username: username,
+      },
+    });
+    
+    return find;
   } else {
     throw new BadRequestError("cant find user");
   }
