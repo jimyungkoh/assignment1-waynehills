@@ -36,7 +36,6 @@ const test = {
   logging: false,
 };
 
-
 const jwtConfig = {
   secretKey: env.JWT_SECRET,
   option: {

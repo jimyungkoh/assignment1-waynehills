@@ -95,15 +95,13 @@ exports.login = async (username, password) => {
         },
       }
     );
-    const jwtToken = {
-      token: jwt.sign(
-        {
-          id: correctUser.dataValues.id,
-        },
-        jwtConfig.secretKey,
-        jwtConfig.option
-      ),
-    };
+    const jwtToken = jwt.sign(
+      {
+        id: correctUser.dataValues.id,
+      },
+      jwtConfig.secretKey,
+      jwtConfig.option
+    );
     return jwtToken;
   } else {
     throw new BadRequestError("cant find user");
