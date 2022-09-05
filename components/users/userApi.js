@@ -52,41 +52,40 @@ router.post("/login", async (req, res, next) => {
  * @description 회원 삭제하기
  * */
 
-router.delete("/delete", async (req, res, next) => {
-  try {
-    const username = req.user.username;
-    await userService.deleteUser(username);
-
-    res.status(200).json({
-      success: true,
-      message: `회원탈퇴가 완료되었습니다.`,
-    });
-  } catch (e) {
-    next(e);
-  }
-});
-
-/**
- * @description 회원 등급변경
- * */
-
-router.patch(
-  "/role",
+router.delete(
+  "/delete",
   userAuthChecker(["admin", "user"]),
   async (req, res, next) => {
     try {
-      console.log(req.userInfo);
-      const { username, role } = req.body;
-      await userService.editUserRole(username, role);
+      const username = req.userInfo.username;
+      await userService.deleteUser(username);
 
       res.status(200).json({
         success: true,
-        message: `${username}의 회원 등급 변경이 완료되었습니다.`,
+        message: `회원탈퇴가 완료되었습니다.`,
       });
     } catch (e) {
       next(e);
     }
   }
 );
+
+/**
+ * @description 회원 등급변경
+ * */
+
+router.patch("/role", userAuthChecker(["admin"]), async (req, res, next) => {
+  try {
+    const { username, role } = req.body;
+    await userService.editUserRole(username, role);
+
+    res.status(200).json({
+      success: true,
+      message: `${username}의 회원 등급 변경이 완료되었습니다.`,
+    });
+  } catch (e) {
+    next(e);
+  }
+});
 
 module.exports = router;
