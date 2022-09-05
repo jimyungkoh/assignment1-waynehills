@@ -1,6 +1,6 @@
 const express = require("express");
 const userService = require("../users/userService");
-
+const userStatsService = require('./userStatsService')
 const router = express.Router();
 
 /**
@@ -77,6 +77,23 @@ router.patch("/role", async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: `${username}의 회원 등급 변경이 완료되었습니다.`,
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.get("/userStats", async (req, res, next) => {
+  try {
+    const { age,gender,date } = req.body;
+    let getAge = await userStatsService.findUserByAge(age);
+    let getGender = await userStatsService.findUserByGender(gender);
+    let getTime = await userStatsService.findUserByTime(date)
+
+    res.status(200).json({
+      getAge,
+      getGender,
+      getTime
     });
   } catch (e) {
     next(e);
