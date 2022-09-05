@@ -95,11 +95,11 @@ router.delete('/operation/:postId', userAuthChecker(["admin"]), async (req, res,
 });
 
 
-/**
+/**✅
  * @description 자유게시판 생성(Create)
  * @description POST /posts/free
  */
-router.post('/free', userAuthChecker(["user"]), async (req, res, next) => {
+router.post('/free', userAuthChecker(["admin", "user"]), async (req, res, next) => {
   const { title, content, type } = req.body;
   //const post = req.body;
   //console.log(post);
@@ -120,14 +120,14 @@ router.post('/free', userAuthChecker(["user"]), async (req, res, next) => {
   }
 });
 
-/**
+/**✅
  * @description 자유게시판 전체 조회(Read)
  * @description GET /posts/free?skip=1&limit=10
  */
 router.get('/free', userAuthChecker(["admin", "user"]), async (req, res, next) => {
   const { skip, limit } = req.query;
-  const { user } = req.body;
-  const postType = 'operation';
+  const user = req.userInfo;
+  const postType = 'free';
   try {
     await postService.readPostsByType(user, postType, skip, limit)
       .then(result => {
@@ -138,13 +138,13 @@ router.get('/free', userAuthChecker(["admin", "user"]), async (req, res, next) =
   }
 });
 
-/**
+/**✅
  * @description 자유게시판 상세 조회(Read)
  * @description GET /posts/free/{postId}
  */
-router.patch('/free/:postId', userAuthChecker(["admin"]), async (req, res, next) => {
+router.get('/free/:postId', userAuthChecker(["admin", "user"]), async (req, res, next) => {
   const { postId } = req.params;
-  const { user } = req.body;
+  const user = req.userInfo;
   try {
     await postService.readPost(postId, user)
       .then(result => {
@@ -155,13 +155,13 @@ router.patch('/free/:postId', userAuthChecker(["admin"]), async (req, res, next)
   }
 });
 
-/**
+/** ✅
  * @description 자유게시판 수정(Update)
  * @description PATCH /posts/free/{postId}
  */
-router.get('/free/:postId', userAuthChecker(["admin"]), async (req, res, next) => {
+router.patch('/free/:postId', userAuthChecker(["admin", "user"]), async (req, res, next) => {
   const { postId } = req.params;
-  const { user } = req.body;
+  const user = req.userInfo;
   try {
     await postService.readPost(postId, user)
       .then(result => {
@@ -172,13 +172,13 @@ router.get('/free/:postId', userAuthChecker(["admin"]), async (req, res, next) =
   }
 });
 
-/**
+/** ✅
  * @description 자유게시판 삭제(Delete)
  * @description DELETE /posts/free/{postId}
  */
-router.delete('/free/:postId', userAuthChecker(["admin"]), async (req, res, next) => {
+router.delete('/free/:postId', userAuthChecker(["admin", "user"]), async (req, res, next) => {
   const { postId } = req.params;
-  const { user } = req.body;
+  const user = req.userInfo;
   try {
     await postService.readPost(postId, user)
       .then(result => {
