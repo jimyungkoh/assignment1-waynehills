@@ -40,7 +40,7 @@ const passwordsAreEqual = async (enteredPassword, userPassword) => {
 };
 
 /**
- * @todo 회원 생성 signUp 메서드
+ * @todo 회원 생성 join 메서드
  * @param {string} name
  * @param {Date} birthday
  * @param {string} gender
@@ -50,7 +50,7 @@ const passwordsAreEqual = async (enteredPassword, userPassword) => {
  * @returns {}
  * @throws {BadRequestError} 가입을 위해 입력한 username 혹은 phoneNumber 가 이미 사용중일 때 발생
  */
-exports.signUp = async (
+exports.join = async (
   name,
   username,
   birthday,
@@ -58,8 +58,8 @@ exports.signUp = async (
   phoneNumber,
   password
 ) => {
-  const aa = await validateUserId(username, phoneNumber);
-  if (aa) {
+  const validateUser = await validateUserId(username, phoneNumber);
+  if (validateUser) {
     throw new BadRequestError("username or phoneNumber already exists");
   }
   const hash = await bcrypt.hash(password, 12);
@@ -87,6 +87,15 @@ exports.signUp = async (
 exports.login = async (username, password) => {
   const correctUser = await findUser(username, password);
   if (correctUser) {
+    await UserModel.update(
+      { lastLoginDate: new Date() },
+      {
+        where: {
+          id: correctUser.dataValues.id,
+        },
+      }
+    );
+
     const jwtToken = jwt.sign(
       {
         id: correctUser.dataValues.id,
@@ -148,3 +157,14 @@ const validateUserId = async (username, phoneNumber) => {
   });
   return du;
 };
+
+/**
+ * 성별별 통계 
+ * @param {string} gender 
+ */
+ exports.findUserByGender = async (gender)=>{
+  const byGender = await UserModel.findAll({
+      attributes: ['name', 'username','gender'],
+      where:{gender:gender}});
+  return byGender;
+}

@@ -1,18 +1,17 @@
 const express = require("express");
 const userService = require("../users/userService");
 const { userAuthChecker } = require("../../middlewares/userAuthChecker");
-
 const router = express.Router();
 
 /**
  * @description 회원 등록하기
  * */
 
-router.post("/signUp", async (req, res, next) => {
+router.post("/join", async (req, res, next) => {
   try {
     const { name, birthday, gender, phoneNumber, username, password } =
       req.body;
-    await userService.signUp(
+    await userService.join(
       name,
       username,
       birthday,
@@ -82,6 +81,19 @@ router.patch("/role", userAuthChecker(["admin"]), async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: `${username}의 회원 등급 변경이 완료되었습니다.`,
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.get("/userStats", async (req, res, next) => {
+  try {
+    const { gender } = req.body;
+    const getGender = await userStatsService.findUserByGender(gender);
+
+    res.status(200).json({
+      getGender,
     });
   } catch (e) {
     next(e);
