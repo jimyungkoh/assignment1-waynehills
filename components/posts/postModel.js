@@ -47,7 +47,12 @@ module.exports = (sequelize) => {
     }
   );
   Post.associate = (models) => {
-    Post.belongsTo(models.User, { foreignKey: { allowNull: false } });
+    Post.belongsTo(models.User, {
+      foreignKey: {
+        name: "userId",
+        allowNull: false
+      }
+    });
   };
   return Post;
 };
