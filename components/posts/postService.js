@@ -19,7 +19,8 @@ const [userRoleUser, userRoleAdmin] = UserModel.getAttributes().role.values;
  * @returns {boolean} 게시판 유효성 검사 확인 걸과
  */
 const validatePostType = (postType) => {
-  if (postTypes.includes(postType)) {
+  //console.log('postTypes.includes(postType)', postTypes.includes(postType))
+  if (!postTypes.includes(postType)) {
     throw new NotFoundError("This postType doesn't exist in posts.type");
   }
 
@@ -121,13 +122,14 @@ exports.createPost = async (post, user) => {
    *  content: string
    * }}
    */
+  console.log(user.id);
   const newPost = {
     title: post.title,
     content: post.content,
     type: post.type,
-    userId: user.id,
+    userId: 2,
   };
-
+  console.log(newPost)
   return PostModel.create(newPost);
 };
 

@@ -7,8 +7,9 @@ const { userAuthChecker } = require('../../middlewares/userAuthChecker');
  * @description 운영게시판 생성(Create)
  * @description POST /posts/operation
  */
-router.post('/operation', userAuthChecker(["user"]), async (req, res, next) => {
-  const { title, content, type, user } = req.body;
+router.post('/operation', userAuthChecker(["admin"]), async (req, res, next) => {
+  const { title, content, type } = req.body;
+  const user = req.userInfo;
   try {
     await postService.createPost({
       title,
@@ -28,7 +29,7 @@ router.post('/operation', userAuthChecker(["user"]), async (req, res, next) => {
  * @description 운영게시판 전체 조회(Read)
  * @description GET /posts/operation?skip=1&limit=10
  */
-router.get('/operation', userAuthChecker(["admin", "user"]), async (req, res, next) => {
+router.get('/operation', userAuthChecker(["admin"]), async (req, res, next) => {
   const { skip, limit } = req.query;
   const { user } = req.body;
   const postType = 'operation';
@@ -98,8 +99,12 @@ router.delete('/operation/:postId', userAuthChecker(["admin"]), async (req, res,
  * @description 자유게시판 생성(Create)
  * @description POST /posts/free
  */
-router.post('/free', userAuthChecker(["admin", "user"]), async (req, res, next) => {
-  const { title, content, type, user } = req.body;
+router.post('/free', userAuthChecker(["user"]), async (req, res, next) => {
+  const { title, content, type } = req.body;
+  //const post = req.body;
+  //console.log(post);
+  const user = req.userInfo;
+  console.log(type);
   try {
     await postService.createPost({
       title,
