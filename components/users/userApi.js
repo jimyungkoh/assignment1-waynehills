@@ -1,7 +1,6 @@
 const express = require("express");
 const userService = require("../users/userService");
 const { userAuthChecker } = require("../../middlewares/userAuthChecker");
-
 const router = express.Router();
 
 /**
@@ -87,5 +86,6 @@ router.patch("/role", userAuthChecker(["admin"]), async (req, res, next) => {
     next(e);
   }
 });
+
 
 module.exports = router;
