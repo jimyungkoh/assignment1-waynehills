@@ -94,7 +94,6 @@ exports.login = async (username, password) => {
       jwtConfig.secretKey,
       jwtConfig.option
     );
-
     return jwtToken;
   } else {
     throw new BadRequestError("cant find user");
@@ -132,10 +131,8 @@ exports.editUserRole = async (username, role) => {
         username: username,
       },
     }
-
   );
-
-
+};
 
 /**
  * @todo 회원 중복아이디 확인 validateUserId 메서드
