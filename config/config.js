@@ -45,4 +45,6 @@ jwtConfig = {
   },
 };
 
-module.exports = { development, production, test, PORT, jwtConfig };
+const SECRET_KEY = env.SECRET_KEY;
+
+module.exports = { development, production, test, PORT, jwtConfig, SECRET_KEY };
