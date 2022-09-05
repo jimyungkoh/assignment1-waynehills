@@ -104,13 +104,7 @@ exports.login = async (username, password) => {
         jwtConfig.option
       ),
     };
-    const find = await UserModel.findOne({
-      where: {
-        username: username,
-      },
-    });
-    
-    return find;
+    return jwtToken;
   } else {
     throw new BadRequestError("cant find user");
   }
