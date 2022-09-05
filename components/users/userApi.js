@@ -41,7 +41,7 @@ router.post("/login", async (req, res, next) => {
 
     res.status(201).json({
       message: `로그인이 완료되었습니다.`,
-      token: token,
+      token,
     });
   } catch (e) {
     next(e);
