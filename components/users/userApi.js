@@ -7,11 +7,11 @@ const router = express.Router();
  * @description 회원 등록하기
  * */
 
-router.post("/signUp", async (req, res, next) => {
+router.post("/join", async (req, res, next) => {
   try {
     const { name, birthday, gender, phoneNumber, username, password } =
       req.body;
-    await userService.signUp(
+    await userService.join(
       name,
       username,
       birthday,
