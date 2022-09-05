@@ -4,7 +4,7 @@ info:
   description: 이렇게 스웨거 자동생성이 됩니다.
   version: 1.0.0
 servers:
-  - url: "http://localhost:3000"
+  - url: "http://localhost:8080"
 paths:
   /users/signUp:
     post:
