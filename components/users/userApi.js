@@ -83,21 +83,5 @@ router.patch("/role", async (req, res, next) => {
   }
 });
 
-router.get("/userStats", async (req, res, next) => {
-  try {
-    const { age,gender,date } = req.body;
-    let getAge = await userStatsService.findUserByAge(age);
-    let getGender = await userStatsService.findUserByGender(gender);
-    let getTime = await userStatsService.findUserByTime(date)
-
-    res.status(200).json({
-      getAge,
-      getGender,
-      getTime
-    });
-  } catch (e) {
-    next(e);
-  }
-});
 
 module.exports = router;
