@@ -17,7 +17,7 @@ router.post(
       await postService.createPost(post, user);
       res.status(201).json({
         success: true,
-        message: `운영게시판 생성이 완료되었습니다.`,
+        message: `운영 게시판 게시글 작성이 완료되었습니다.`,
       });
     } catch (err) {
       next(err);
@@ -119,7 +119,7 @@ router.post(
       await postService.createPost(post, user);
       res.status(201).json({
         success: true,
-        message: `게시글 작성이 완료되었습니다.`,
+        message: `자유 게시판 게시글 작성이 완료되었습니다.`,
       });
     } catch (err) {
       next(err);
@@ -222,7 +222,7 @@ router.post("/notice", userAuthChecker(["admin"]), async (req, res, next) => {
     await postService.createPost(post, user);
     res.status(201).json({
       success: true,
-      message: `공지 생성이 완료되었습니다.`,
+      message: `공지 게시판 게시글 작성이 완료되었습니다.`,
     });
   } catch (err) {
     next(err);
