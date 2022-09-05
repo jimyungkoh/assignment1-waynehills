@@ -233,20 +233,24 @@ router.post("/notice", userAuthChecker(["admin"]), async (req, res, next) => {
  * @description 공지 전체 조회(Read)
  * @description GET /posts/notice?skip=1&limit=10
  */
-router.get("/free", userAuthChecker(["admin"]), async (req, res, next) => {
-  const { skip, limit } = req.query;
-  const user = req.userInfo;
-  const postType = "notice";
-  try {
-    await postService
-      .readPostsByType(user, postType, skip, limit)
-      .then((result) => {
-        res.status(200).json(result);
-      });
-  } catch (err) {
-    next(err);
+router.get(
+  "/notice",
+  userAuthChecker(["admin", "user"]),
+  async (req, res, next) => {
+    try {
+      const user = req.userInfo;
+      const postType = "notice";
+      const { skip, limit } = req.query;
+      await postService
+        .readPostsByType(user, postType, skip, limit)
+        .then((result) => {
+          res.status(200).json(result);
+        });
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 /**
  * @description 공지 상세 조회(Read)
