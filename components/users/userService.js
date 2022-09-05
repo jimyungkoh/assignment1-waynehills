@@ -1,33 +1,153 @@
-const {UserModel} = require('./userModel');
-const {NotFoundError} = require('../../errors/httpErrors');
+const { UserModel } = require("../../model/index");
+const { BadRequestError } = require("../../errors/httpErrors");
+const { jwtConfig } = require("../../config/config");
+const bcrypt = require("bcrypt");
+const { Op } = require("sequelize");
+const jwt = require("jsonwebtoken");
 
 /**
- * 삭제 메서드 예시
- * - 삭제 메서드의 호출 주체는 userApi(route)입니다.
- * @param {string} user_id '유저가 설정한' 메서드입니다.
- * exports.delete = async (user_id) => {
- *   const destroyResult = await OpeningModel.destroy({where: {id: id}});
- *
- *   if (!destroyResult) {
- *     throw NotFoundError(`${user_id} doesn't exist in opening table`);
- *   }
- * }
+ * 테이블에 username과 password가 같은 항목을 찾는(로그인을 위한) 메서드 : findUser
+ * @param {string} username
+ * @param {string} password
+ * @returns
+ * @throws {BadRequestError} username 또는 password를 찾지 못할 때 발생
  */
+const findUser = async (username, password) => {
+  const find = await UserModel.findOne({
+    where: {
+      username: username,
+    },
+  });
+  if (!find) {
+    throw new BadRequestError("username Error");
+  }
+  if (passwordsAreEqual(password, find.password)) {
+    return find;
+  } else {
+    throw new BadRequestError("password Error");
+  }
+};
 
 /**
- * @todo 회원 생성 메서드 생성
+ * bcrypt 모듈 내부에서 제공하는 비밀번호 비교 매서드
+ * @param {string} enteredPassword
+ * @param {string}  userPassword
+ * @returns {boolean}
  */
-
+const passwordsAreEqual = async (enteredPassword, userPassword) => {
+  const bool = await bcrypt.compare(enteredPassword, userPassword);
+  return bool;
+};
 
 /**
- * @todo 회원 삭제 메서드
+ * @todo 회원 생성 signUp 메서드
+ * @param {string} name
+ * @param {Date} birthday
+ * @param {string} gender
+ * @param {string} phoneNumber
+ * @param {string} username
+ * @param {string} password
+ * @returns {}
+ * @throws {BadRequestError} 가입을 위해 입력한 username 혹은 phoneNumber 가 이미 사용중일 때 발생
  */
+exports.signUp = async (
+  name,
+  username,
+  birthday,
+  gender,
+  phoneNumber,
+  password
+) => {
+  const aa = await validateUserId(username, phoneNumber);
+  if (aa) {
+    throw new BadRequestError("username or phoneNumber already exists");
+  }
+  const hash = await bcrypt.hash(password, 12);
+  const newUser = await UserModel.create({
+    name: name,
+    username: username,
+    password: hash,
+    phoneNumber: phoneNumber,
+    role: "user",
+    gender: gender,
+    birthday: birthday,
+    lastLoginDate: new Date(), // 되나??
+  });
+  return newUser;
+};
 
 /**
- * @todo 회원 validatePassword 메서드
+ * @todo 회원 로그인 login 메서드
+ * @param {string} username
+ * @param {string} password
+ * @returns {string} // login 성공시 사용자 정보 전달
+ * @throws {BadRequestError} id(PK)를 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
  */
+
+exports.login = async (username, password) => {
+  const correctUser = await findUser(username, password);
+  if (correctUser) {
+    const jwtToken = {
+      token: jwt.sign(
+        {
+          id: correctUser.dataValues.id,
+        },
+        jwtConfig.secretKey,
+        jwtConfig.option
+      ),
+    };
+    return jwtToken;
+  } else {
+    throw new BadRequestError("cant find user");
+  }
+};
 
 /**
- * @todo 회원 validateRole 메서드
+ * 사용자 탈퇴
+ * destore(시퀄에서 삭제 orm)사용하면 데이터 그대로 남고 deletedAt 만 쿼리날린 시간으로 업데이트
+ * @param {string} username
+ * @throws {BadRequestError}  username을 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
+ */
+exports.deleteUser = async (username) => {
+  const destroyResult = await UserModel.destroy({
+    where: { username: username },
+  });
+
+  if (!destroyResult) {
+    throw new BadRequestError(`${username} doesn't exist in user table`);
+  }
+};
+
+/**
+ * @todo 회원 권한변경 editUserRole 메서드
+ * @param {string} username
+ * @param {string} role
+ * @returns
+ * @throws {BadRequestError}  username을 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
+ */
+exports.editUserRole = async (username, role) => {
+  await UserModel.update(
+    { role: role },
+    {
+      where: {
+        username: username,
+      },
+    }
+  );
+
+};
+
+/**
+ * @todo 회원 중복아이디 확인 validateUserId 메서드
+ * @param {string} username
+ * @returns {boolean}
  */
 
+const validateUserId = async (username, phoneNumber) => {
+  const du = await UserModel.findOne({
+    where: {
+      [Op.or]: [{ username: username }, { phoneNumber: phoneNumber }],
+    },
+  });
+  return du;
+};

@@ -8,8 +8,9 @@ const router = express.Router();
  * */
 
 router.post("/signUp", async (req, res, next) => {
-  const { name, birthday, gender, phoneNumber, username, password } = req.body;
   try {
+    const { name, birthday, gender, phoneNumber, username, password } =
+      req.body;
     await userService.signUp(
       name,
       username,
@@ -33,8 +34,8 @@ router.post("/signUp", async (req, res, next) => {
  */
 
 router.post("/login", async (req, res, next) => {
-  const { username, password } = req.body;
   try {
+    const { username, password } = req.body;
     const token = await userService.login(username, password);
 
     res.status(201).json({
@@ -51,9 +52,8 @@ router.post("/login", async (req, res, next) => {
  * */
 
 router.delete("/delete", async (req, res, next) => {
-  const username = req.user.username;
-
   try {
+    const username = req.user.username;
     await userService.deleteUser(username);
 
     res.status(200).json({
@@ -70,9 +70,8 @@ router.delete("/delete", async (req, res, next) => {
  * */
 
 router.patch("/role", async (req, res, next) => {
-  const { username, role } = req.body;
-
   try {
+    const { username, role } = req.body;
     await userService.editUserRole(username, role);
 
     res.status(200).json({

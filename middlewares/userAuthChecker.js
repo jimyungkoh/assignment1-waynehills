@@ -1,50 +1,77 @@
-const { BadRequestError, ForbiddenError } = require("../errors/httpErrors");
+const {
+  BadRequestError,
+  ForbiddenError,
+  UnauthorizedError,
+} = require("../errors/httpErrors");
 const UserModel = require("../model/index");
-const { secretKey, option } = require("../config/config");
+
+const { jwtConfig } = require("../config/config");
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
+
+const jwtVerify = promisify(jwt.verify);
 
 /**
- * 토큰을 통해 다시 사용자id를 불러오는 메서드 : verify
- * @param {string} token
+ * jwt.verify 오류 처리를 위해 분리한 함수
+ * @param {string} token jwt 토큰을 받아옵니다.
  * @returns {int}
  */
 const verify = async (token) => {
-  let decoded;
   try {
-    decoded = await jwt.verify(token, secretKey, option);
+    return await jwtVerify(token, jwtConfig.secretKey, jwtConfig.option);
   } catch (err) {
     if (err.message === "jwt expired") {
-      console.log("expired token");
-      return "TOKEN_EXPIRED";
+      throw new UnauthorizedError("Jwt token is expired");
+    } else if (err.message === "jwt signature is required") {
+      throw new UnauthorizedError("Jwt signature is required");
+    } else if (err.message === "jwt malformed") {
+      throw new UnauthorizedError(
+        "Jwt verify function does not have three components"
+      );
+    } else if (err.message === "invalid signature") {
+      throw new UnauthorizedError("Jwt Signature is invalid");
+    } else if (
+      err.message === "jwt audience invalid. expected: [OPTIONS AUDIENCE]"
+    ) {
+      throw new UnauthorizedError("Jwt Audience is invalid");
+    } else if (err.message === "jwt id invalid. expected: [OPTIONS JWT ID]") {
+      throw new UnauthorizedError("Jwt id is invalid");
+    } else if (
+      err.message === "jwt issuer invalid. expected: [OPTIONS ISSUER]"
+    ) {
+      throw new UnauthorizedError("Jwt issuer is invalid");
+    } else if (
+      err.message === "jwt subject invalid. expected: [OPTIONS SUBJECT]"
+    ) {
+      throw new UnauthorizedError("Jwt subject is invalid");
+    } else if (err.message === "jwt not active") {
+      throw new UnauthorizedError("Jwt is not active");
     } else {
-      console.log("invalid token");
-      return "TOKEN_INVALID";
+      throw new UnauthorizedError("Jwt token is invalid");
     }
   }
-
-  return decoded;
 };
 
 /**
  * @description 토큰이 유효한 요청에 권한을 확인하고 유저 정보를 추가하는 미들웨어
- * @param role 요구되는 회원등급
+ * @param {Array} roles 접근가능 회원등급 배열
  */
-const userAuthChecker = (role) => {
+const userAuthChecker = (roles) => {
   return async (req, res, next) => {
-    const JWT = req.headers.authorization;
     try {
-      const userId = await verify(JWT); // 토큰 복호화
-      const user = await UserModel.findByPk(userId); // 복호화된 Id를 통해 유저 정보 얻기
-      if (!user) {
-        throw new BadRequestError(`can't find user`);
+      const token = req.headers.authorization;
+      const userId = verify(token); // 토큰 복호화
+      const userInfo = await UserModel.findByPk(userId); // 복호화된 Id를 통해 유저 정보 얻기
+      if (!userInfo) {
+        throw new BadRequestError(`Can't find user`);
       }
-      if (user.role != role) {
-        throw new ForbiddenError(`doesn't have enough authorization`);
+      if (!roles.includes(userInfo.role)) {
+        throw new ForbiddenError(`User doesn't have authorization`);
       }
-      req.user = user;
+      req.userInfo = userInfo;
       next();
-    } catch (e) {
-      next(e);
+    } catch (err) {
+      next(err);
     }
   };
 };

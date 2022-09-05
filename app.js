@@ -3,7 +3,10 @@ const cors = require("cors");
 const logger = require("morgan");
 const userRouter = require("./components/users/userApi");
 const postRouter = require("./components/posts/postApi");
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
 
+const swaggerFile = YAML.load("./swagger/swagger-output.yaml");
 const { PORT } = require("./config/config.js");
 const { sequelize } = require("./model");
 const { errorLogger, errorResponder } = require("./middlewares/errorHandler");
@@ -16,9 +19,14 @@ const { errorLogger, errorResponder } = require("./middlewares/errorHandler");
  */
 function loader(app) {
   app.use(express.json());
-  app.use(express.urlencoded({extended: true}));
+  app.use(express.urlencoded({ extended: true }));
   app.use(cors());
   app.use(logger("combined"));
+  app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerFile, { explorer: true })
+  );
 
   return app;
 }
