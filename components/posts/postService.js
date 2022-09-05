@@ -200,7 +200,7 @@ exports.readPosts = async (user, skip = 0, limit = 10) => {
  * @returns {Promise<boolean>} 포스트 업데이트 결과
  */
 exports.updatePost = async (postId, newPost, user) => {
-  const originalPost = await PostModel.findByPk(postId);
+  const originalPost = PostModel.findByPk(postId);
 
   if (!originalPost) {
     throw new NotFoundError(

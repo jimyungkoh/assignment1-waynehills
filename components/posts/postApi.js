@@ -106,7 +106,7 @@ router.delete(
 );
 
 /**
- * @description 자유게시판 게시글 생성(Create) -- 해결!
+ * @description 자유게시판 생성(Create) -- 해결!
  * @description POST /posts/free
  */
 router.post(
