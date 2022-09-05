@@ -3,7 +3,7 @@ const {
   ForbiddenError,
   UnauthorizedError,
 } = require("../errors/httpErrors");
-const UserModel = require("../model/index");
+const { UserModel } = require("../model/index");
 
 const { jwtConfig } = require("../config/config");
 const jwt = require("jsonwebtoken");
@@ -46,9 +46,7 @@ const verify = async (token) => {
       throw new UnauthorizedError("Jwt subject is invalid");
     } else if (err.message === "jwt not active") {
       throw new UnauthorizedError("Jwt is not active");
-    } else {
-      throw new UnauthorizedError("Jwt token is invalid");
-    }
+    } else throw new UnauthorizedError("Jwt token is invalid");
   }
 };
 
@@ -59,9 +57,9 @@ const verify = async (token) => {
 const userAuthChecker = (roles) => {
   return async (req, res, next) => {
     try {
-      const token = req.headers.authorization;
-      const userId = verify(token); // 토큰 복호화
-      const userInfo = await UserModel.findByPk(userId); // 복호화된 Id를 통해 유저 정보 얻기
+      const token = req.headers.authorization.split("Bearer ")[1];
+      const userId = await verify(token); // 토큰 복호화
+      const userInfo = await UserModel.findByPk(userId.id); // 복호화된 Id를 통해 유저 정보 얻기
       if (!userInfo) {
         throw new BadRequestError(`Can't find user`);
       }
