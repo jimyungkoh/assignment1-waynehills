@@ -1,5 +1,6 @@
 const express = require("express");
 const userService = require("../users/userService");
+const { userAuthChecker } = require("../../middlewares/userAuthChecker");
 
 const router = express.Router();
 
@@ -69,18 +70,23 @@ router.delete("/delete", async (req, res, next) => {
  * @description 회원 등급변경
  * */
 
-router.patch("/role", async (req, res, next) => {
-  try {
-    const { username, role } = req.body;
-    await userService.editUserRole(username, role);
+router.patch(
+  "/role",
+  userAuthChecker(["admin", "user"]),
+  async (req, res, next) => {
+    try {
+      console.log(req.userInfo);
+      const { username, role } = req.body;
+      await userService.editUserRole(username, role);
 
-    res.status(200).json({
-      success: true,
-      message: `${username}의 회원 등급 변경이 완료되었습니다.`,
-    });
-  } catch (e) {
-    next(e);
+      res.status(200).json({
+        success: true,
+        message: `${username}의 회원 등급 변경이 완료되었습니다.`,
+      });
+    } catch (e) {
+      next(e);
+    }
   }
-});
+);
 
 module.exports = router;

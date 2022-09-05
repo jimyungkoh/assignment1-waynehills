@@ -110,6 +110,8 @@ paths:
                   example: ahmoogae1
   /users/delete:
     delete:
+      security:
+        - bearerAuth: []
       tags:
         - Users
       description: 회원탈퇴
@@ -123,6 +125,8 @@ paths:
           description: "Server Error"
   /users/role:
     patch:
+      security:
+        - bearerAuth: []
       tags:
         - Users
       description: 회원권한 변경

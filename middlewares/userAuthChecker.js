@@ -1,5 +1,9 @@
-const { BadRequestError, ForbiddenError, UnauthorizedError } = require("../errors/httpErrors");
-const UserModel = require("../model/index");
+const {
+  BadRequestError,
+  ForbiddenError,
+  UnauthorizedError,
+} = require("../errors/httpErrors");
+const { UserModel } = require("../model/index");
 const { jwtConfig } = require("../config/config");
 const jwt = require("jsonwebtoken");
 
@@ -14,26 +18,32 @@ const verify = (token) => {
     return decoded;
   } catch (err) {
     if (err.message === "jwt expired") {
-        throw new UnauthorizedError("Jwt token is expired");
-    } else if (err.message === 'jwt signature is required') {
-        throw new UnauthorizedError("Jwt signature is required");
-    } else if (err.message === 'jwt malformed') {
-        throw new UnauthorizedError("Jwt verify function does not have three components");
-    } else if (err.message === 'invalid signature') {
-        throw new UnauthorizedError("Jwt Signature is invalid");
-    } else if (err.message === 'jwt audience invalid. expected: [OPTIONS AUDIENCE]') {
-        throw new UnauthorizedError("Jwt Audience is invalid");
-    } else if (err.message === 'jwt id invalid. expected: [OPTIONS JWT ID]') {
-        throw new UnauthorizedError("Jwt id is invalid");
-    } else if (err.message === 'jwt issuer invalid. expected: [OPTIONS ISSUER]') {
-        throw new UnauthorizedError("Jwt issuer is invalid");
-    } else if (err.message === 'jwt subject invalid. expected: [OPTIONS SUBJECT]') {
-        throw new UnauthorizedError("Jwt subject is invalid");
-    } else if (err.message === 'jwt not active') {
-        throw new UnauthorizedError("Jwt is not active");
-    } else (err.message === 'invalid token') {
-        throw new UnauthorizedError("Jwt token is invalid");
-    }
+      throw new UnauthorizedError("Jwt token is expired");
+    } else if (err.message === "jwt signature is required") {
+      throw new UnauthorizedError("Jwt signature is required");
+    } else if (err.message === "jwt malformed") {
+      throw new UnauthorizedError(
+        "Jwt verify function does not have three components"
+      );
+    } else if (err.message === "invalid signature") {
+      throw new UnauthorizedError("Jwt Signature is invalid");
+    } else if (
+      err.message === "jwt audience invalid. expected: [OPTIONS AUDIENCE]"
+    ) {
+      throw new UnauthorizedError("Jwt Audience is invalid");
+    } else if (err.message === "jwt id invalid. expected: [OPTIONS JWT ID]") {
+      throw new UnauthorizedError("Jwt id is invalid");
+    } else if (
+      err.message === "jwt issuer invalid. expected: [OPTIONS ISSUER]"
+    ) {
+      throw new UnauthorizedError("Jwt issuer is invalid");
+    } else if (
+      err.message === "jwt subject invalid. expected: [OPTIONS SUBJECT]"
+    ) {
+      throw new UnauthorizedError("Jwt subject is invalid");
+    } else if (err.message === "jwt not active") {
+      throw new UnauthorizedError("Jwt is not active");
+    } else throw new UnauthorizedError("Jwt token is invalid");
   }
 };
 
@@ -44,13 +54,15 @@ const verify = (token) => {
 const userAuthChecker = (roles) => {
   return async (req, res, next) => {
     try {
-      const token = req.headers.authorization;
+      console.log(req.headers.authorization.split("Bearer ")[1]);
+      const token = req.headers.authorization.split("Bearer ")[1];
       const userId = verify(token); // 토큰 복호화
-      const userInfo = await UserModel.findByPk(userId); // 복호화된 Id를 통해 유저 정보 얻기
+      console.log(userId);
+      const userInfo = await UserModel.findByPk(userId.id); // 복호화된 Id를 통해 유저 정보 얻기
       if (!userInfo) {
         throw new BadRequestError(`Can't find user`);
       }
-      if (!roles.includes(user.role)) {
+      if (!roles.includes(userInfo.role)) {
         throw new ForbiddenError(`User doesn't have authorization`);
       }
       req.userInfo = userInfo;
