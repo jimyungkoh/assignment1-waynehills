@@ -24,8 +24,8 @@ router.post("/join", async (req, res, next) => {
       success: true,
       message: `회원가입이 완료되었습니다.`,
     });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -42,8 +42,8 @@ router.post("/login", async (req, res, next) => {
       message: `로그인이 완료되었습니다.`,
       token,
     });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -63,8 +63,8 @@ router.delete(
         success: true,
         message: `회원탈퇴가 완료되었습니다.`,
       });
-    } catch (e) {
-      next(e);
+    } catch (err) {
+      next(err);
     }
   }
 );
@@ -82,8 +82,8 @@ router.patch("/role", userAuthChecker(["admin"]), async (req, res, next) => {
       success: true,
       message: `${username}의 회원 등급 변경이 완료되었습니다.`,
     });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -95,8 +95,8 @@ router.get("/userStats", async (req, res, next) => {
     res.status(200).json({
       getGender,
     });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 });
 

@@ -119,7 +119,7 @@ router.post(
       await postService.createPost(post, user);
       res.status(201).json({
         success: true,
-        message: `자유게시판 생성이 완료되었습니다.`,
+        message: `게시글 작성이 완료되었습니다.`,
       });
     } catch (err) {
       next(err);
