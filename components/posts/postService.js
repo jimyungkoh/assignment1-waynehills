@@ -140,9 +140,7 @@ exports.createPost = async (post, user) => {
  * @returns {Promise<Object>}
  */
 exports.readPost = async (postId, user) => {
-  const post = await PostModel.findByPk(postId).catch((err) => {
-    throw new Error(err);
-  });
+  const post = await PostModel.findByPk(postId);
 
   // eslint-disable-next-line no-undef
   hasRoleToRead(user.role, post.type);
@@ -190,8 +188,6 @@ exports.readPosts = async (user, skip = 0, limit = 10) => {
     offset: skip,
     limit: limit,
     attributes: { exclude: ["content"] },
-  }).catch((err) => {
-    throw new Error(err);
   });
 };
 
@@ -205,9 +201,7 @@ exports.readPosts = async (user, skip = 0, limit = 10) => {
  * @returns {Promise<boolean>} 포스트 업데이트 결과
  */
 exports.updatePost = async (postId, newPost, user) => {
-  const originalPost = PostModel.findByPk(postId).catch((err) => {
-    throw new Error(err);
-  });
+  const originalPost = PostModel.findByPk(postId);
 
   if (!originalPost) {
     throw new NotFoundError(
@@ -222,9 +216,7 @@ exports.updatePost = async (postId, newPost, user) => {
     Object.fromEntries(Object.entries(newPost).filter(([, value]) => !!value))
   );
 
-  return !!(await PostModel.update(post).catch((err) => {
-    throw new Error(err);
-  }));
+  return !!(await PostModel.update(post));
 };
 
 /**
@@ -236,9 +228,7 @@ exports.updatePost = async (postId, newPost, user) => {
  * @returns {Promise<boolean>}
  */
 exports.deletePost = async (postId, user) => {
-  const post = await PostModel.findByPk(postId).catch((err) => {
-    throw new Error(err);
-  });
+  const post = await PostModel.findByPk(postId);
 
   if (!post)
     throw new NotFoundError(
