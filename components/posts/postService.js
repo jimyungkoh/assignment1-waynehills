@@ -7,7 +7,7 @@ const {
 
 // 0: free, 1: notice, 2: operation
 const postTypes = PostModel.getAttributes().type.values;
-const [postTypeFree, postTypeOperation] = postTypes;
+const [postTypeFree, postTypeNotice, postTypeOperation] = postTypes;
 
 // 0: user, 1: admin
 const [userRoleUser, userRoleAdmin] = UserModel.getAttributes().role.values;
