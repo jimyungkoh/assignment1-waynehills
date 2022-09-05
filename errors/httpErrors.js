@@ -46,6 +46,7 @@ class MethodNotAllowedError extends BasicError {
 }
 
 module.exports = {
+  BasicError,
   BadRequestError,
   UnauthorizedError,
   ForbiddenError,
