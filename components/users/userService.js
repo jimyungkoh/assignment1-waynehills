@@ -40,7 +40,7 @@ const passwordsAreEqual = async (enteredPassword, userPassword) => {
 };
 
 /**
- * @todo 회원 생성 signUp 메서드
+ * @todo 회원 생성 join 메서드
  * @param {string} name
  * @param {Date} birthday
  * @param {string} gender
@@ -50,7 +50,7 @@ const passwordsAreEqual = async (enteredPassword, userPassword) => {
  * @returns {}
  * @throws {BadRequestError} 가입을 위해 입력한 username 혹은 phoneNumber 가 이미 사용중일 때 발생
  */
-exports.signUp = async (
+exports.join = async (
   name,
   username,
   birthday,
