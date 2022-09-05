@@ -87,6 +87,7 @@ exports.signUp = async (
 exports.login = async (username, password) => {
   const correctUser = await findUser(username, password);
   if (correctUser) {
+
     await UserModel.update(
       { lastLoginDate: new Date() },
       {
@@ -95,6 +96,7 @@ exports.login = async (username, password) => {
         },
       }
     );
+
     const jwtToken = jwt.sign(
       {
         id: correctUser.dataValues.id,
@@ -140,7 +142,6 @@ exports.editUserRole = async (username, role) => {
       },
     }
   );
-
 };
 
 /**

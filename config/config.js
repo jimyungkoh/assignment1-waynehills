@@ -1,6 +1,6 @@
-//require("dotenv").config();
+require("dotenv").config();
 //const path = require('path');
-require("dotenv").config({ path: __dirname + "/dev.env" });
+// require("dotenv").config({ path: __dirname + "/dev.env" });
 
 const env = process.env;
 
@@ -44,7 +44,6 @@ const jwtConfig = {
     issuer: env.JWT_ISSUER,
   },
 };
-
 
 const SECRET_KEY = env.SECRET_KEY;
 
