@@ -1,8 +1,5 @@
 const { UserModel } = require("../../model/index");
-const {
-  BadRequestError,
-  UnauthorizedError,
-} = require("../../errors/httpErrors");
+const { BadRequestError } = require("../../errors/httpErrors");
 const { jwtConfig } = require("../../config/config");
 const bcrypt = require("bcrypt");
 const { Op } = require("sequelize");
@@ -20,8 +17,6 @@ const findUser = async (username, password) => {
     where: {
       username: username,
     },
-  }).catch((err) => {
-    throw new Error(err);
   });
   if (!find) {
     throw new BadRequestError("username Error");
@@ -77,8 +72,6 @@ exports.signUp = async (
     gender: gender,
     birthday: birthday,
     lastLoginDate: new Date(), // 되나??
-  }).catch((err) => {
-    throw new Error(err);
   });
   return newUser;
 };
@@ -140,9 +133,7 @@ exports.editUserRole = async (username, role) => {
         username: username,
       },
     }
-  ).catch((err) => {
-    throw new Error(err);
-  });
+  );
 
 };
 
@@ -157,8 +148,6 @@ const validateUserId = async (username, phoneNumber) => {
     where: {
       [Op.or]: [{ username: username }, { phoneNumber: phoneNumber }],
     },
-  }).catch((err) => {
-    throw new Error(err);
   });
   return du;
 };
