@@ -1,13 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const postService = require('./postService');
-
-// async middleware
-// const wrapAsync = (fn) => {
-//   return (req, res, next) => {
-//     fn(req, res, next).catch(next)
-//   }
-// }
+const { userAuthChecker } = require('../../middlewares/userAuthChecker');
 
 /**
  * @description 운영게시판 생성(Create)
@@ -20,9 +14,7 @@ router.post('/operation', async (req, res, next) => {
       title,
       content,
       type,
-    }, {
-      user_id: user.id,
-    });
+    }, user);
     res.status(201).json({
       success: true,
       message: `운영게시판 생성이 완료되었습니다.`,
@@ -37,22 +29,19 @@ router.post('/operation', async (req, res, next) => {
  * @description GET /posts/operation?skip=1&limit=10
  */
 router.get('/operation', async (req, res, next) => {
-  const { skip, limit, title } = req.query;
+  const { skip, limit } = req.query;
   const postType = 'operation';
   try {
-    if (!title) {
-      // 검색 X
-      await postService.readPostsByType(user, postType, skip, limit)
+    // 검색 X
+    await postService.readPostsByType(user, postType, skip, limit)
       .then(result => {
-        return res.status(200).json(result);
-      });  
-    } 
-    // 검색 O
-
+        res.status(200).json(result);
+      }); 
   } catch (err) {
     next(err);
   }
 });
+
 
 /**
  * @description 운영게시판 상세 조회(Read)
