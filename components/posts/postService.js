@@ -19,7 +19,7 @@ const [userRoleUser, userRoleAdmin] = UserModel.getAttributes().role.values;
  * @returns {boolean} 게시판 유효성 검사 확인 걸과
  */
 const validatePostType = (postType) => {
-  if (postTypes.includes(postType)) {
+  if (!postTypes.includes(postType)) {
     throw new NotFoundError("This postType doesn't exist in posts.type");
   }
 
@@ -90,7 +90,7 @@ const hasRoleToRead = (userRole, postType) => {
       `${userRole} doesn't have a Permission to read ${postType}`
     );
   }
-
+  
   return true;
 };
 
@@ -121,13 +121,14 @@ exports.createPost = async (post, user) => {
    *  content: string
    * }}
    */
+  console.log(user.id);
   const newPost = {
     title: post.title,
     content: post.content,
     type: post.type,
     userId: user.id,
   };
-
+  console.log(newPost)
   return PostModel.create(newPost);
 };
 
@@ -201,6 +202,7 @@ exports.readPosts = async (user, skip = 0, limit = 10) => {
  * @returns {Promise<boolean>} 포스트 업데이트 결과
  */
 exports.updatePost = async (postId, newPost, user) => {
+
   const originalPost = PostModel.findByPk(postId);
 
   if (!originalPost) {
@@ -215,8 +217,11 @@ exports.updatePost = async (postId, newPost, user) => {
     originalPost,
     Object.fromEntries(Object.entries(newPost).filter(([, value]) => !!value))
   );
+  console.log('✅', post)
 
-  return !!(await PostModel.update(post));
+  return !!(await PostModel.update(post, { where: { id: postId } }).catch((err) => {
+    throw new Error(err);
+  }));
 };
 
 /**

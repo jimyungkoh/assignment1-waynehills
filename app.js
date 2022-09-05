@@ -2,13 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const logger = require("morgan");
 const userRouter = require("./components/users/userApi");
+const postRouter = require("./components/posts/postApi");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 
 const swaggerFile = YAML.load("./swagger/swagger-output.yaml");
 const { PORT } = require("./config/config.js");
 const { sequelize } = require("./model");
-const { errorLogger, errorResponder } = require("./middlewares/errorhandler");
+const { errorLogger, errorResponder } = require("./middlewares/errorHandler");
 
 /**
  * express middleware를 사용합니다.
@@ -36,9 +37,11 @@ function loader(app) {
  * @returns {*}
  */
 function registerRouters(app) {
-  app.use("/users", userRouter);
+  app.use('/users', userRouter);
+  app.use('/posts', postRouter);
   return app;
 }
+
 
 // error 처리 미들웨어를 추가합니다.
 function errorHandler(app) {
