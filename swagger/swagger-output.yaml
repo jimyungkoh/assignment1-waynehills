@@ -14,7 +14,7 @@ paths:
   /users/join:
     post:
       tags:
-        - Users
+        - /users
       description: 회원가입
       requestBody:
         required: true
@@ -58,7 +58,7 @@ paths:
   /users/login:
     post:
       tags:
-        - Users
+        - /users
       description: 로그인
       requestBody:
         required: true
@@ -87,11 +87,11 @@ paths:
   /users/delete:
     delete:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Users
+        - /users
       description: 회원탈퇴
-      parameters: []
+      parameters: [ ]
       responses:
         "200":
           description: "회원탈퇴가 완료되었습니다."
@@ -102,9 +102,9 @@ paths:
   /users/role:
     patch:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Users
+        - /users
       description: 회원권한 변경
       requestBody:
         content:
@@ -121,6 +121,403 @@ paths:
       responses:
         "200":
           description: "${username}의 회원 등급 변경이 완료되었습니다."
+        "500":
+          description: "Server Error"
+  /posts/free:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/free
+      description: 자유 게시판 게시글 여러 건 불러오기
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: "{userRole} doesn't have a Permission to read ${postType}"
+        "500":
+          description: "Server Error"
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/free
+      description: 자유 게시판 게시글 작성하기
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Team G
+                content:
+                  type: string
+                  example: 우리는 Team G입니다!
+                type:
+                  type: string
+                  example: free
+              required:
+                - title
+                - content
+                - type
+      responses:
+        "201":
+          description: "자유 게시판 게시글 생성이 완료되었습니다."
+        "400":
+          description: "Post values cannot be empty"
+        "403":
+          description: "${userRole} doesn't have a Permission to read ${postType}"
+        "404":
+          description: "This postType doesn't exist in posts.type"
+        "500":
+          description: "Server Error"
+  /posts/free/{id}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/free
+      description: 자유 게시판 게시글 단건 불러오기
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: "{userRole} doesn't have a Permission to read ${postType}"
+        '404':
+          description: "The requested URL /${postId} was not found on this server."
+        "500":
+          description: "Server Error"
+    patch:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/free
+      description: 자유 게시판 게시글 수정하기
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Team G
+                content:
+                  type: string
+                  example: 우리는 Team G입니다!
+                type:
+                  type: string
+                  example: free
+              required:
+                - title
+                - content
+                - type
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: "The requested URL /${postId} was not found on this server."
+        '403':
+          description: "{userRole} doesn't have a Permission to read ${postType}"
+        "500":
+          description: "Server Error"
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/free
+      description: 자유 게시판 게시글 삭제하기
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: "{userRole} doesn't have a Permission to read ${postType}"
+        '404':
+          description: "${posts_id} doesn't exist in opening table."
+        "500":
+          description: "Server Error"
+  /posts/notice:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/notice
+      description: 공지 게시판 게시글 여러 건 불러오기
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: "${userRole} doesn't have a Permission to read ${postType}"
+        "500":
+          description: "Server Error"
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/notice
+      description: 공지 게시판 게시글 작성하기
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Team G
+                content:
+                  type: string
+                  example: 우리는 Team G입니다!
+                type:
+                  type: string
+                  example: notice
+              required:
+                - title
+                - content
+                - type
+      responses:
+        "201":
+          description: "공지 게시판 게시글 생성이 완료되었습니다."
+        "400":
+          description: "Post values cannot be empty"
+        "403":
+          description: "${userRole} doesn't have a Permission to read ${postType}"
+        "404":
+          description: "This postType doesn't exist in posts.type"
+        "500":
+          description: "Server Error"
+  /posts/notice/{id}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/notice
+      description: 공지 게시판 게시글 단건 가져오기
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: "{userRole} doesn't have a Permission to read ${postType}"
+        '404':
+          description: "The requested URL /${postId} was not found on this server."
+        "500":
+          description: "Server Error"
+    patch:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/notice
+      description: 공지 게시판 게시글 수정하기
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Team G
+                content:
+                  type: string
+                  example: 우리는 Team G입니다!
+                type:
+                  type: string
+                  example: notice
+              required:
+                - title
+                - content
+                - type
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: "The requested URL /${postId} was not found on this server."
+        '403':
+          description: "{userRole} doesn't have a Permission to read ${postType}"
+        "500":
+          description: "Server Error"
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/notice
+      description: 공지 게시판 게시글 삭제하기
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: "{userRole} doesn't have a Permission to read ${postType}"
+        '404':
+          description: "${posts_id} doesn't exist in opening table."
+        "500":
+          description: "Server Error"
+
+  /posts/operation:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/operation
+      description: 운영 게시판 게시글 여러 건 불러오기
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: "${userRole} doesn't have a Permission to read ${postType}"
+        "500":
+          description: "Server Error"
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/operation
+      description: 운영 게시판 게시글 작성하기
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Team G
+                content:
+                  type: string
+                  example: 우리는 Team G입니다!
+                type:
+                  type: string
+                  example: operation
+              required:
+                - title
+                - content
+                - type
+      responses:
+        "201":
+          description: "운영 게시판 게시글 생성이 완료되었습니다."
+        "400":
+          description: "Post values cannot be empty"
+        "403":
+          description: "${userRole} doesn't have a Permission to read ${postType}"
+        "404":
+          description: "This postType doesn't exist in posts.type"
+        "500":
+          description: "Server Error"
+  /posts/operation/{id}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/operation
+      description: 운영 게시판 게시글 단건 불러오기
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: "{userRole} doesn't have a Permission to read ${postType}"
+        '404':
+          description: "The requested URL /${postId} was not found on this server."
+        "500":
+          description: "Server Error"
+    patch:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/operation
+      description: 운영 게시판 게시글 수정하기
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Team G
+                content:
+                  type: string
+                  example: 우리는 Team G입니다!
+                type:
+                  type: string
+                  example: operation
+              required:
+                - title
+                - content
+                - type
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: "The requested URL /${postId} was not found on this server."
+        '403':
+          description: "{userRole} doesn't have a Permission to read ${postType}"
+        "500":
+          description: "Server Error"
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - /posts/operation
+      description: 운영 게시판 게시글 삭제하기
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+      responses:
+        '200':
+          description: OK
+        '403':
+          description: "{userRole} doesn't have a Permission to read ${postType}"
+        '404':
+          description: "${posts_id} doesn't exist in opening table."
         "500":
           description: "Server Error"
 components:
