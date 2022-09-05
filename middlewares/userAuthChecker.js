@@ -4,18 +4,21 @@ const {
   UnauthorizedError,
 } = require("../errors/httpErrors");
 const { UserModel } = require("../model/index");
+
 const { jwtConfig } = require("../config/config");
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
+
+const jwtVerify = promisify(jwt.verify);
 
 /**
  * jwt.verify 오류 처리를 위해 분리한 함수
  * @param {string} token jwt 토큰을 받아옵니다.
  * @returns {int}
  */
-const verify = (token) => {
+const verify = async (token) => {
   try {
-    const decoded = jwt.verify(token, jwtConfig.secretKey, jwtConfig.option);
-    return decoded;
+    return await jwtVerify(token, jwtConfig.secretKey, jwtConfig.option);
   } catch (err) {
     if (err.message === "jwt expired") {
       throw new UnauthorizedError("Jwt token is expired");
