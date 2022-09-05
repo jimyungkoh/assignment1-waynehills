@@ -1,0 +1,45 @@
+{
+  "root": true,
+  // 이 파일이 최상위 설정파일로 인식됩니다.더 상위에 파일이 override하는것을 방지합니다.
+  "parser": "@babel/eslint-parser",
+  "plugins": [
+    "prettier"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parserOptions": {
+    "requireConfigFile": "false",
+    "ecmaVersion": 7,
+    "sourceType": "script",
+    "ecmaFeatures": {
+      "jsx": false
+      // jsx 금지
+    }
+  },
+  "env": {
+    "browser": false,
+    "node": true
+  },
+  "rules": {
+    "no-console": "warn",
+    "no-multiple-empty-lines": "warn",
+    // 여러 줄 공백 금지
+    "no-unused-vars": "warn",
+    // 사용하지 않는 변수 금지
+    "no-var": "error",
+    // var 금지
+    "prettier/prettier": [
+      "error",
+      // prettier에서 지적한 내용 에러 처리
+      {
+        "endOfLine": "auto",
+        "singleQuote": false,
+        // 씽따옴표 사용
+        "semi": true
+        // 세미콜론 사용
+      }
+    ]
+  }
+}
