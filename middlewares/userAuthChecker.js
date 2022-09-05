@@ -58,7 +58,7 @@ const userAuthChecker = (roles) => {
   return async (req, res, next) => {
     try {
       const token = req.headers.authorization.split("Bearer ")[1];
-      const userId = verify(token); // 토큰 복호화
+      const userId = await verify(token); // 토큰 복호화
       const userInfo = await UserModel.findByPk(userId.id); // 복호화된 Id를 통해 유저 정보 얻기
       if (!userInfo) {
         throw new BadRequestError(`Can't find user`);
