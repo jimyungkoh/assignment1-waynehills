@@ -36,6 +36,7 @@ const test = {
   logging: false,
 };
 
+
 exports.jwtConfig = {
   secretKey: env.JWT_SECRET,
   option: {
@@ -44,6 +45,7 @@ exports.jwtConfig = {
     issuer: env.JWT_ISSUER,
   },
 };
+
 
 const SECRET_KEY = env.SECRET_KEY;
 
