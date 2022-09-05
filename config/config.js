@@ -1,4 +1,6 @@
-require("dotenv").config();
+//require("dotenv").config();
+//const path = require('path');
+require("dotenv").config({ path: __dirname + "/dev.env" });
 
 const env = process.env;
 
@@ -33,6 +35,17 @@ const test = {
   port: env.MYSQL_PORT,
   logging: false,
 };
+
+
+exports.jwtConfig = {
+  secretKey: env.JWT_SECRET,
+  option: {
+    algorithm: "HS256",
+    expiresIn: env.JWT_EXPIRES_IN,
+    issuer: env.JWT_ISSUER,
+  },
+};
+
 
 const SECRET_KEY = env.SECRET_KEY;
 
