@@ -37,11 +37,10 @@ function loader(app) {
  * @returns {*}
  */
 function registerRouters(app) {
-  app.use('/users', userRouter);
-  app.use('/posts', postRouter);
+  app.use("/users", userRouter);
+  app.use("/posts", postRouter);
   return app;
 }
-
 
 // error 처리 미들웨어를 추가합니다.
 function errorHandler(app) {
