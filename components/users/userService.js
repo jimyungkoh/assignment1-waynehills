@@ -58,8 +58,8 @@ exports.signUp = async (
   phoneNumber,
   password
 ) => {
-  const aa = await validateUserId(username, phoneNumber);
-  if (aa) {
+  const validateUser = await validateUserId(username, phoneNumber);
+  if (validateUser) {
     throw new BadRequestError("username or phoneNumber already exists");
   }
   const hash = await bcrypt.hash(password, 12);
@@ -165,3 +165,14 @@ const validateUserId = async (username, phoneNumber) => {
   });
   return du;
 };
+
+/**
+ * 성별별 통계 
+ * @param {string} gender 
+ */
+ exports.findUserByGender = async (gender)=>{
+  const byGender = await UserModel.findAll({
+      attributes: ['name', 'username','gender'],
+      where:{gender:gender}});
+  return byGender;
+}
