@@ -87,14 +87,30 @@ exports.join = async (
 exports.login = async (username, password) => {
   const correctUser = await findUser(username, password);
   if (correctUser) {
-    const jwtToken = jwt.sign(
+    await UserModel.update(
+      { lastLoginDate: new Date() },
       {
-        id: correctUser.dataValues.id,
-      },
-      jwtConfig.secretKey,
-      jwtConfig.option
+        where: {
+          id: correctUser.dataValues.id,
+        },
+      }
     );
-    return jwtToken;
+    const jwtToken = {
+      token: jwt.sign(
+        {
+          id: correctUser.dataValues.id,
+        },
+        jwtConfig.secretKey,
+        jwtConfig.option
+      ),
+    };
+    const find = await UserModel.findOne({
+      where: {
+        username: username,
+      },
+    });
+    
+    return find;
   } else {
     throw new BadRequestError("cant find user");
   }
