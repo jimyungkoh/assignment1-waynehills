@@ -36,7 +36,7 @@ const test = {
   logging: false,
 };
 
-jwtConfig = {
+exports.jwtConfig = {
   secretKey: env.JWT_SECRET,
   option: {
     algorithm: "HS256",
@@ -47,4 +47,4 @@ jwtConfig = {
 
 const SECRET_KEY = env.SECRET_KEY;
 
-module.exports = { development, production, test, PORT, jwtConfig, SECRET_KEY };
+module.exports = { development, production, test, PORT, SECRET_KEY };
