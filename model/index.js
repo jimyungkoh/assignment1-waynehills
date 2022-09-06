@@ -1,21 +1,25 @@
-'use strict';
+"use strict";
 
-const Sequelize = require('sequelize');
-const config = require('../config/config');
-const environment = 'production';
+const Sequelize = require("sequelize");
+const config = require("../config/config");
+const environment = "production";
 const env_conf = config[environment];
 
-const sequelize = new Sequelize(env_conf.database,
-  env_conf.username, env_conf.password, env_conf);
+const sequelize = new Sequelize(
+  env_conf.database,
+  env_conf.username,
+  env_conf.password,
+  env_conf
+);
 
-const defineUserModel = require('../components/users/userModel');
-const definePostModel = require('../components/posts/postModel');
+const defineUserModel = require("../components/users/userModel");
+const definePostModel = require("../components/posts/postModel");
 
 const UserModel = defineUserModel(sequelize);
 const PostModel = definePostModel(sequelize);
 
 // model 간 관계를 정의합니다.
-Object.values(sequelize.models).forEach(model => {
+Object.values(sequelize.models).forEach((model) => {
   if (model.associate) {
     model.associate(sequelize.models);
   }
@@ -27,6 +31,6 @@ Object.values(sequelize.models).forEach(model => {
  * */
 module.exports = {
   sequelize,
-  //UserModel,
-  //PostsModel
+  UserModel,
+  PostModel,
 };
