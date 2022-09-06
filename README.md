@@ -125,7 +125,7 @@
  2. 로그인한 유저가 게시판 이용 권한이 있는 사용자라면, {user, postType, skip, limit}을 서비스 로직에 보내 페이징 처리된 검색 결과를 가져옵니다.
  3. 검색된 결과를 json 형식으로 반환합니다.
 
-![image](https://user-images.githubusercontent.com/30682847/188525673-86405317-b501-4b74-8398-90d70f61fa2d.png)
+![image](https://user-images.githubusercontent.com/30682847/188548665-1f447266-b2e2-433d-808a-67a814d692c9.png)
 
 **게시판 내 게시글 작성**
  1. userAuthChecker를 이용해 게시판 이용 권한이 있는 사용자를 판별합니다.
