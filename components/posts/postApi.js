@@ -4,7 +4,7 @@ const postService = require("./postService");
 const { userAuthChecker } = require("../../middlewares/userAuthChecker");
 
 /**
- * @description 운영게시판 생성(Create) -- 해결!
+ * @description 운영게시판 생성(Create)
  * @description POST /posts/operation
  */
 router.post(
@@ -26,7 +26,7 @@ router.post(
 );
 
 /**
- * @description 운영게시판 전체 조회(Read) -- 해결!
+ * @description 운영게시판 전체 조회(Read)
  * @description GET /posts/operation?skip=1&limit=10
  */
 router.get("/operation", userAuthChecker(["admin"]), async (req, res, next) => {
@@ -45,7 +45,7 @@ router.get("/operation", userAuthChecker(["admin"]), async (req, res, next) => {
 });
 
 /**
- * @description 운영게시판 상세 조회(Read) -- 해결!
+ * @description 운영게시판 상세 조회(Read)
  * @description GET /posts/operation/{postId}
  */
 router.get(
@@ -106,7 +106,7 @@ router.delete(
 );
 
 /**
- * @description 자유게시판 생성(Create) -- 해결!
+ * @description 자유게시판 생성(Create)
  * @description POST /posts/free
  */
 router.post(
@@ -128,7 +128,7 @@ router.post(
 );
 
 /**
- * @description 자유게시판 전체 조회(Read) -- 해결!
+ * @description 자유게시판 전체 조회(Read)
  * @description GET /posts/free?skip=1&limit=10
  */
 router.get(
@@ -151,7 +151,7 @@ router.get(
 );
 
 /**
- * @description 자유게시판 상세 조회(Read) -- 해결!
+ * @description 자유게시판 상세 조회(Read)
  * @description GET /posts/free/{postId}
  */
 router.get(
