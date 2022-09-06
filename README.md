@@ -1,5 +1,7 @@
 # 회원 정보 & 게시판 관리 RESTful API 서버
 
+- [회원 정보 & 게시판 관리 RESTful API 서버](https://team-g-board-api-fmx4v.ondigitalocean.app/api-docs/)가 오픈되었습니다!
+
 **22.09.01 ~ 22.09.05**   
 
 원티드 백엔드 프리온보딩 1차 과제입니다. `backend`
