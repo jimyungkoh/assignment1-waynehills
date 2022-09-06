@@ -13,6 +13,54 @@
 ![image](https://user-images.githubusercontent.com/50348197/188470317-17512323-9cc4-4c7f-a4a0-899035d5f29c.png)
 ### 기술 스택
 `nodejs` `express.js` `sequelize` `mySql` `swagger`
+
+### 폴더 구조
+```.
+├── README.md
+├── components
+│   ├── posts
+│   │   ├── postApi.js
+│   │   ├── postService.js
+│   │   └── postModel.js
+│   └── users
+├── .idea
+├── config
+├── errors
+├── middlewares
+├── models
+├── seeders
+├── swagger
+│
+├── .gitignore
+├── .eslintrc.json
+├── .prettierrc.json
+├── app.js
+├── index.js
+├── package-lock.json
+└── package.json
+```
+#### Directory
+* components : 
+    * posts : posts 도메인의 요청에 대한 소스코드들이 모여있습니다.
+      * postApi.js : request에대한 라우터 설정과 postService 호출, response를 담당합니다.
+      * postService.js : 서비스로직 적용과 ORM을 통한 DB통신을 담당합니다.
+      * postModel.js : post 테이블이 작성되어있습니다.
+    * users : users 도메인의 요청에 대한 소스코드들이 모여있습니다.
+
+* .idea : 
+* config : 프로젝트에 필요한 환경변수들이 모여있습니다.
+* errors : 프로젝트에 사용될 httpError클래스들이 있습니다.
+* middlewares : 컨트롤러에 닿기 전에 반복되는 로직을 모듈화 해 놓은 폴더입니다.(Error로거 & 핸들러, 토큰검사기)
+* models : Sequelize connection에 필요한 로직이 들어있습니다.
+* seeders : 정적데이터를 생성하는 seeder파일들이 모여있습니다.
+* swagger : 
+
+#### File
+* .eslintrc.json : 협업시 동일한 eslint 설정을위해 적용될 json 형태의 파일입니다.
+* .prettierrc.json : 협업시 동일한 prettier 설정을위해 적용될 json 형태의 파일입니다.
+* app.js : 서버를 필요한 각종 소스코드와 미들웨어들을 조합합니다.
+* index.js : 
+
 ### 협업 방식( git flow )
   
    
