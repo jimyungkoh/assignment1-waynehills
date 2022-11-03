@@ -1,10 +1,8 @@
 # 회원 정보 & 게시판 관리 RESTful API 서버
 
-- [회원 정보 & 게시판 관리 RESTful API 서버](https://team-g-board-api-fmx4v.ondigitalocean.app/api-docs/)가 오픈되었습니다!
+- ~[회원 정보 & 게시판 관리 RESTful API 서버](https://team-g-board-api-fmx4v.ondigitalocean.app/api-docs/)가 오픈되었습니다!~ (평가기간 종료로 운영 중단)
 
 **22.09.01 ~ 22.09.05**   
-
-원티드 백엔드 프리온보딩 1차 과제입니다. `backend`
 
 ## 🌱 서비스 개요
 회원 정보 내용을 포함하는 테이블을 설계하고 다음과 같은 기능을 제공하는 RESTful API 서버 개발을 목적으로 구현하였습니다.
