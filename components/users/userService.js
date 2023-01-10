@@ -1,9 +1,9 @@
-const { UserModel } = require("../../model/index");
-const { BadRequestError } = require("../../errors/httpErrors");
-const { jwtConfig } = require("../../config/config");
-const bcrypt = require("bcrypt");
-const { Op } = require("sequelize");
-const jwt = require("jsonwebtoken");
+import * as bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
+import { Op } from "sequelize";
+import { UserModel } from "../../model/index";
+import { BadRequestError } from "../../errors/httpErrors";
+import { jwtConfig } from "../../config/config";
 
 /**
  * 테이블에 username과 password가 같은 항목을 찾는(로그인을 위한) 메서드 : findUser
@@ -50,7 +50,7 @@ const passwordsAreEqual = async (enteredPassword, userPassword) => {
  * @returns {}
  * @throws {BadRequestError} 가입을 위해 입력한 username 혹은 phoneNumber 가 이미 사용중일 때 발생
  */
-exports.join = async (
+export const join = async (
   name,
   username,
   birthday,
@@ -83,8 +83,7 @@ exports.join = async (
  * @returns {string} // login 성공시 사용자 정보 전달
  * @throws {BadRequestError} id(PK)를 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
  */
-
-exports.login = async (username, password) => {
+export const login = async (username, password) => {
   const correctUser = await findUser(username, password);
   if (correctUser) {
     await UserModel.update(
@@ -115,7 +114,7 @@ exports.login = async (username, password) => {
  * @param {string} username
  * @throws {BadRequestError}  username을 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
  */
-exports.deleteUser = async (username) => {
+export const deleteUser = async (username) => {
   const destroyResult = await UserModel.destroy({
     where: { username: username },
   });
@@ -132,7 +131,7 @@ exports.deleteUser = async (username) => {
  * @returns
  * @throws {BadRequestError}  username을 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
  */
-exports.editUserRole = async (username, role) => {
+export const editUserRole = async (username, role) => {
   await UserModel.update(
     { role: role },
     {
@@ -148,7 +147,6 @@ exports.editUserRole = async (username, role) => {
  * @param {string} username
  * @returns {boolean}
  */
-
 const validateUserId = async (username, phoneNumber) => {
   const du = await UserModel.findOne({
     where: {
@@ -159,12 +157,13 @@ const validateUserId = async (username, phoneNumber) => {
 };
 
 /**
- * 성별별 통계 
- * @param {string} gender 
+ * 성별별 통계
+ * @param {string} gender
  */
- exports.findUserByGender = async (gender)=>{
+export const findUserByGender = async (gender) => {
   const byGender = await UserModel.findAll({
-      attributes: ['name', 'username','gender'],
-      where:{gender:gender}});
+    attributes: ["name", "username", "gender"],
+    where: { gender: gender },
+  });
   return byGender;
-}
+};

@@ -90,7 +90,7 @@ router.patch("/role", userAuthChecker(["admin"]), async (req, res, next) => {
 router.get("/userStats", async (req, res, next) => {
   try {
     const { gender } = req.body;
-    const getGender = await userStatsService.findUserByGender(gender);
+    const getGender = await userService.findUserByGender(gender);
 
     res.status(200).json({
       getGender,
