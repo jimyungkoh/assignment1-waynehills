@@ -1,7 +1,8 @@
-const express = require("express");
+import express from "express";
+import { userAuthChecker } from "../../middlewares/userAuthChecker";
+import * as postService from "./postService";
+
 const router = express.Router();
-const postService = require("./postService");
-const { userAuthChecker } = require("../../middlewares/userAuthChecker");
 
 /**
  * @description 운영게시판 생성(Create)
@@ -313,4 +314,4 @@ router.delete(
   }
 );
 
-module.exports = router;
+export { router };

@@ -4,12 +4,12 @@ import * as YAML from "yamljs";
 import * as logger from "morgan";
 import * as swaggerUi from "swagger-ui-express";
 import { PORT } from "./config/config.js";
-import * as userRouter from "./components/users/userApi";
-import * as postRouter from "./components/posts/postApi";
+import { userApi } from "./components/users";
+import { postApi } from "./components/posts";
 
 const swaggerFile = YAML.load("./swagger/swagger-output.yaml");
-const { sequelize } = require("./model");
-const { errorLogger, errorResponder } = require("./middlewares/errorHandler");
+import { sequelize } from "./model";
+import { errorLogger, errorResponder } from "./middlewares/errorHandler";
 
 /**
  * express middleware를 사용합니다.
@@ -37,8 +37,8 @@ function loader(app) {
  * @returns {*}
  */
 function registerRouters(app) {
-  app.use("/users", userRouter);
-  app.use("/posts", postRouter);
+  app.use("/users", userApi);
+  app.use("/posts", postApi);
   return app;
 }
 

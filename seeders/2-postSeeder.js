@@ -1,8 +1,8 @@
 "use strict";
 
-const { Op } = require("sequelize");
+import { Op } from "sequelize";
 
-module.exports = {
+export default {
   up: async (queryInterface, Sequelize) => {
     const now = new Date();
     const countArray = [];

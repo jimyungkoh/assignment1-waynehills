@@ -1,9 +1,9 @@
-const { UserModel, PostModel } = require("../../model");
-const {
+import { UserModel, PostModel } from "../../model";
+import {
   NotFoundError,
   BadRequestError,
   ForbiddenError,
-} = require("../../errors/httpErrors");
+} from "../../errors/httpErrors";
 
 // 0: free, 1: notice, 2: operation
 const postTypes = PostModel.getAttributes().type.values;
@@ -105,7 +105,7 @@ const hasRoleToRead = (userRole, postType) => {
  * @throws {BadRequestError} 원하지 않는 값이 들어왔을 때
  * @returns {Promise<Object>}
  */
-exports.createPost = async (post, user) => {
+export const createPost = async (post, user) => {
   // eslint-disable-next-line no-undef
   await Promise.all([
     validatePostType(post.type),
@@ -138,7 +138,7 @@ exports.createPost = async (post, user) => {
  * @throws {NotFoundError} postId가 posts에 존재하지 않음
  * @returns {Promise<Object>}
  */
-exports.readPost = async (postId, user) => {
+export const readPost = async (postId, user) => {
   const post = await PostModel.findByPk(postId);
 
   // eslint-disable-next-line no-undef
@@ -161,7 +161,7 @@ exports.readPost = async (postId, user) => {
  * @throws {ForbiddenError} 읽기 권한이 없는 유저
  * @returns {Promise<Object>}
  */
-exports.readPostsByType = async (user, postType, skip = 0, limit = 10) => {
+export const readPostsByType = async (user, postType, skip = 0, limit = 10) => {
   hasRoleToRead(user.role, postType);
 
   return await PostModel.findAll({
@@ -180,7 +180,7 @@ exports.readPostsByType = async (user, postType, skip = 0, limit = 10) => {
  * @throws {ForbiddenError} 읽기 권한이 없는 유저
  * @returns {Promise<Object>}
  */
-exports.readPosts = async (user, skip = 0, limit = 10) => {
+export const readPosts = async (user, skip = 0, limit = 10) => {
   hasRoleToRead(user.role, postTypeOperation);
 
   return await PostModel.findAll({
@@ -199,7 +199,7 @@ exports.readPosts = async (user, skip = 0, limit = 10) => {
  * @throws {ForbiddenError} 유저는 해당 게시글 수정할 권한이 없음
  * @returns {Promise<boolean>} 포스트 업데이트 결과
  */
-exports.updatePost = async (postId, newPost, user) => {
+export const updatePost = async (postId, newPost, user) => {
   const originalPost = await PostModel.findByPk(postId);
   if (!originalPost) {
     throw new NotFoundError(
@@ -225,7 +225,7 @@ exports.updatePost = async (postId, newPost, user) => {
  * @throws {ForbiddenError} 유저는 해당 게시글 삭제할 권한이 없음
  * @returns {Promise<boolean>}
  */
-exports.deletePost = async (postId, user) => {
+export const deletePost = async (postId, user) => {
   const post = await PostModel.findByPk(postId);
 
   if (!post)
