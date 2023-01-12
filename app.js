@@ -1,15 +1,15 @@
-const express = require("express");
-const cors = require("cors");
-const logger = require("morgan");
-const userRouter = require("./components/users/userApi");
-const postRouter = require("./components/posts/postApi");
-const swaggerUi = require("swagger-ui-express");
-const YAML = require("yamljs");
+import express from "express";
+import cors from "cors";
+import * as YAML from "yamljs";
+import * as logger from "morgan";
+import * as swaggerUi from "swagger-ui-express";
+import { PORT } from "./config/config.js";
+import { userApi } from "./components/users";
+import { postApi } from "./components/posts";
 
 const swaggerFile = YAML.load("./swagger/swagger-output.yaml");
-const { PORT } = require("./config/config.js");
-const { sequelize } = require("./model");
-const { errorLogger, errorResponder } = require("./middlewares/errorHandler");
+import { sequelize } from "./model";
+import { errorLogger, errorResponder } from "./middlewares/errorHandler";
 
 /**
  * express middleware를 사용합니다.
@@ -37,8 +37,8 @@ function loader(app) {
  * @returns {*}
  */
 function registerRouters(app) {
-  app.use("/users", userRouter);
-  app.use("/posts", postRouter);
+  app.use("/users", userApi);
+  app.use("/posts", postApi);
   return app;
 }
 
@@ -53,7 +53,7 @@ function errorHandler(app) {
 /**
  * express 서비스를 생성합니다.
  */
-async function bootstrap() {
+export const bootstrap = async () => {
   const app = express();
 
   sequelize
@@ -75,8 +75,4 @@ async function bootstrap() {
   return app.listen(PORT, () => {
     console.log("Running server on " + PORT);
   });
-}
-
-module.exports = {
-  bootstrap,
 };

@@ -1,4 +1,4 @@
-const swaggerAutogen = require("swagger-autogen")({ openapi: "3.0.0" });
+import swaggerAutogen from "swagger-autogen";
 
 const options = {
   info: {
@@ -20,6 +20,12 @@ const options = {
     },
   },
 };
+
 const outputFile = "./swagger-output.json";
 const endpointsFiles = ["./app.js"];
-swaggerAutogen(outputFile, endpointsFiles, options);
+
+swaggerAutogen({ openapi: "3.0.0" })(outputFile, endpointsFiles, options).then(
+  async () => {
+    await import("../index.js"); // Your project's root file
+  }
+);

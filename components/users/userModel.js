@@ -1,7 +1,7 @@
 /**
  * @todo 유저 모델 생성 및 export 하기
  * */
-const { DataTypes } = require("sequelize");
+import { DataTypes } from "sequelize";
 
 /**
  * unique: username, phoneNumber

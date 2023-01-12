@@ -1,12 +1,12 @@
-const express = require("express");
-const userService = require("../users/userService");
-const { userAuthChecker } = require("../../middlewares/userAuthChecker");
+import express from "express";
+import * as userService from "../users/userService";
+import { userAuthChecker } from "../../middlewares/userAuthChecker";
+
 const router = express.Router();
 
 /**
  * @description 회원 등록하기
  * */
-
 router.post("/join", async (req, res, next) => {
   try {
     const { name, birthday, gender, phoneNumber, username, password } =
@@ -90,7 +90,7 @@ router.patch("/role", userAuthChecker(["admin"]), async (req, res, next) => {
 router.get("/userStats", async (req, res, next) => {
   try {
     const { gender } = req.body;
-    const getGender = await userStatsService.findUserByGender(gender);
+    const getGender = await userService.findUserByGender(gender);
 
     res.status(200).json({
       getGender,
@@ -100,4 +100,4 @@ router.get("/userStats", async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export { router };

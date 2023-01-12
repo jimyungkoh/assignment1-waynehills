@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "babel": {},
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "swagger": "node ./swagger/swagger.js && node swagger/json2yaml.js",

@@ -1,8 +1,8 @@
 "use strict";
 
-const bcrypt = require("bcrypt");
-
-module.exports = {
+import bcrypt from "bcrypt";
+bcrypt.
+export default {
   up: async (queryInterface, Sequelize) => {
     const now = new Date();
     const saltRounds = 16;
