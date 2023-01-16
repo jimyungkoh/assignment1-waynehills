@@ -1,6 +1,6 @@
 import express from "express";
-import { userAuthChecker } from "../../middlewares/userAuthChecker";
-import * as postService from "./postService";
+import { userAuthChecker } from "../../middlewares/userAuthChecker.js";
+import * as postService from "./postService.js";
 
 const router = express.Router();
 

@@ -1,3 +1,7 @@
+import { config } from "dotenv";
+
+config();
+
 const env = process.env;
 
 export const PORT = env.SERVER_PORT || 8080;

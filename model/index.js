@@ -1,9 +1,9 @@
 "use strict";
 
 import { Sequelize } from "sequelize";
-import * as config from "../config/config";
-import defineUserModel from "../components/users/userModel";
-import definePostModel from "../components/posts/postModel";
+import * as config from "../config/config.js";
+import defineUserModel from "../components/users/userModel.js";
+import definePostModel from "../components/posts/postModel.js";
 
 const environment = "production";
 const env_conf = config[environment];
@@ -12,7 +12,11 @@ const sequelize = new Sequelize(
   env_conf.database,
   env_conf.username,
   env_conf.password,
-  env_conf
+  {
+    host: env_conf.host,
+    port: parseInt(env_conf.port),
+    dialect: env_conf.dialect,
+  }
 );
 
 const UserModel = defineUserModel(sequelize);

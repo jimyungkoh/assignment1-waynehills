@@ -1,9 +1,9 @@
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { Op } from "sequelize";
-import { UserModel } from "../../model/index";
-import { BadRequestError } from "../../errors/httpErrors";
-import { jwtConfig } from "../../config/config";
+import { UserModel } from "../../model/index.js";
+import { BadRequestError } from "../../errors/httpErrors.js";
+import { jwtConfig } from "../../config/config.js";
 
 /**
  * 테이블에 username과 password가 같은 항목을 찾는(로그인을 위한) 메서드 : findUser

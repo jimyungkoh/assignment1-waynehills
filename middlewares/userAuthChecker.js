@@ -4,9 +4,9 @@ import {
   BadRequestError,
   ForbiddenError,
   UnauthorizedError,
-} from "../errors/httpErrors";
-import { UserModel } from "../model/index";
-import { jwtConfig } from "../config/config";
+} from "../errors/httpErrors.js";
+import { UserModel } from "../model/index.js";
+import { jwtConfig } from "../config/config.js";
 
 const jwtVerify = promisify(jwt.verify);
 

@@ -1,6 +1,6 @@
 import express from "express";
-import * as userService from "../users/userService";
-import { userAuthChecker } from "../../middlewares/userAuthChecker";
+import * as userService from "../users/userService.js";
+import { userAuthChecker } from "../../middlewares/userAuthChecker.js";
 
 const router = express.Router();
 
