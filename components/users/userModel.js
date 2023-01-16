@@ -11,7 +11,7 @@ import { DataTypes } from "sequelize";
  * underscored: true 를 사용하여 자동으로 snake_case로 변환됩니다.
  *  */
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const User = sequelize.define(
     "User",
     {

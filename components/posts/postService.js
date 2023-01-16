@@ -1,9 +1,9 @@
-import { UserModel, PostModel } from "../../model";
+import { UserModel, PostModel } from "../../model/index.js";
 import {
   NotFoundError,
   BadRequestError,
   ForbiddenError,
-} from "../../errors/httpErrors";
+} from "../../errors/httpErrors.js";
 
 // 0: free, 1: notice, 2: operation
 const postTypes = PostModel.getAttributes().type.values;
