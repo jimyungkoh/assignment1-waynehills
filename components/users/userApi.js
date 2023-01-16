@@ -1,6 +1,7 @@
 import express from "express";
 import * as userService from "../users/userService.js";
 import { userAuthChecker } from "../../middlewares/userAuthChecker.js";
+import { BadRequestError, NotFoundError } from "../../errors/httpErrors.js";
 
 const router = express.Router();
 
@@ -8,25 +9,32 @@ const router = express.Router();
  * @description 회원 등록하기
  * */
 router.post("/join", async (req, res, next) => {
-  try {
-    const { name, birthday, gender, phoneNumber, username, password } =
-      req.body;
-    await userService.join(
-      name,
-      username,
-      birthday,
-      gender,
-      phoneNumber,
-      password
-    );
+  const userInfo = {
+    name: req.body.name,
+    birthday: req.body.birthday,
+    gender: req.body.gender,
+    phoneNumber: req.body.phoneNumber,
+    username: req.body.username,
+    password: req.body.password,
+  };
 
-    res.status(201).json({
-      success: true,
-      message: `회원가입이 완료되었습니다.`,
-    });
-  } catch (err) {
-    next(err);
-  }
+  await userService
+    .validateUserId(userInfo.username, userInfo.phoneNumber)
+    .then((result) => {
+      if (result) {
+        throw new BadRequestError();
+      }
+    })
+    .catch((err) => next(err))
+    .then(() => {
+      userService.join(userInfo);
+    })
+    .then(() =>
+      res.status(201).json({
+        success: true,
+        message: `회원가입이 완료되었습니다.`,
+      })
+    );
 });
 
 /***
@@ -72,7 +80,6 @@ router.delete(
 /**
  * @description 회원 등급변경
  * */
-
 router.patch("/role", userAuthChecker(["admin"]), async (req, res, next) => {
   try {
     const { username, role } = req.body;

@@ -41,39 +41,23 @@ const passwordsAreEqual = async (enteredPassword, userPassword) => {
 
 /**
  * @todo 회원 생성 join 메서드
- * @param {string} name
- * @param {Date} birthday
- * @param {string} gender
- * @param {string} phoneNumber
- * @param {string} username
- * @param {string} password
+ * @param {Object} userInfo
  * @returns {}
  * @throws {BadRequestError} 가입을 위해 입력한 username 혹은 phoneNumber 가 이미 사용중일 때 발생
  */
-export const join = async (
-  name,
-  username,
-  birthday,
-  gender,
-  phoneNumber,
-  password
-) => {
-  const validateUser = await validateUserId(username, phoneNumber);
-  if (validateUser) {
-    throw new BadRequestError("username or phoneNumber already exists");
-  }
-  const hash = await bcrypt.hash(password, 12);
-  const newUser = await UserModel.create({
-    name: name,
-    username: username,
-    password: hash,
-    phoneNumber: phoneNumber,
+export const join = async (userInfo) => {
+  userInfo.password = await bcrypt.hash(userInfo.password, 12);
+
+  return await UserModel.create({
+    name: userInfo.name,
+    username: userInfo.username,
+    password: userInfo.password,
+    phoneNumber: userInfo.phoneNumber,
     role: "user",
-    gender: gender,
-    birthday: birthday,
+    gender: userInfo.gender,
+    birthday: userInfo.birthday,
     lastLoginDate: new Date(), // 되나??
   });
-  return newUser;
 };
 
 /**
@@ -145,15 +129,14 @@ export const editUserRole = async (username, role) => {
 /**
  * @todo 회원 중복아이디 확인 validateUserId 메서드
  * @param {string} username
- * @returns {boolean}
+ * @returns
  */
-const validateUserId = async (username, phoneNumber) => {
-  const du = await UserModel.findOne({
+export const validateUserId = async (username, phoneNumber) => {
+  return await UserModel.findOne({
     where: {
       [Op.or]: [{ username: username }, { phoneNumber: phoneNumber }],
     },
   });
-  return du;
 };
 
 /**
