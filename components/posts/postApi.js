@@ -14,15 +14,15 @@ router.post(
   async (req, res, next) => {
     const post = req.body;
     const user = req.userInfo;
-    try {
-      await postService.createPost(post, user);
-      res.status(201).json({
-        success: true,
-        message: `운영 게시판 게시글 작성이 완료되었습니다.`,
-      });
-    } catch (err) {
-      next(err);
-    }
+    await postService
+      .createPost(post, user)
+      .then(() => {
+        res.status(201).json({
+          success: true,
+          message: `운영 게시판 게시글 작성이 완료되었습니다.`,
+        });
+      })
+      .catch((err) => next(err));
   }
 );
 
@@ -34,15 +34,12 @@ router.get("/operation", userAuthChecker(["admin"]), async (req, res, next) => {
   const { skip, limit } = req.query;
   const user = req.userInfo;
   const postType = "operation";
-  try {
-    await postService
-      .readPostsByType(user, postType, skip, limit)
-      .then((result) => {
-        res.status(200).json(result);
-      });
-  } catch (err) {
-    next(err);
-  }
+  await postService
+    .readPostsByType(user, postType, skip, limit)
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => next(err));
 });
 
 /**
@@ -55,13 +52,12 @@ router.get(
   async (req, res, next) => {
     const { postId } = req.params;
     const user = req.userInfo;
-    try {
-      await postService.readPost(postId, user).then((result) => {
+    await postService
+      .readPost(postId, user)
+      .then((result) => {
         res.status(200).json(result);
-      });
-    } catch (err) {
-      next(err);
-    }
+      })
+      .catch((err) => next(err));
   }
 );
 
@@ -76,13 +72,13 @@ router.patch(
     const { postId } = req.params;
     const user = req.userInfo;
     const newPost = req.body;
-    try {
-      await postService.updatePost(postId, newPost, user).then((result) => {
+
+    await postService
+      .updatePost(postId, newPost, user)
+      .then((result) => {
         res.status(200).send(`'${postId}'번 글이 수정되었습니다.`);
-      });
-    } catch (err) {
-      next(err);
-    }
+      })
+      .catch((err) => next(err));
   }
 );
 
@@ -96,13 +92,13 @@ router.delete(
   async (req, res, next) => {
     const { postId } = req.params;
     const user = req.userInfo;
-    try {
-      await postService.deletePost(postId, user).then((result) => {
+
+    await postService
+      .deletePost(postId, user)
+      .then((result) => {
         res.status(200).send(`'${postId}'번 글이 삭제되었습니다.`);
-      });
-    } catch (err) {
-      next(err);
-    }
+      })
+      .catch((err) => next(err));
   }
 );
 
@@ -116,15 +112,16 @@ router.post(
   async (req, res, next) => {
     const post = req.body;
     const user = req.userInfo;
-    try {
-      await postService.createPost(post, user);
-      res.status(201).json({
-        success: true,
-        message: `자유 게시판 게시글 작성이 완료되었습니다.`,
-      });
-    } catch (err) {
-      next(err);
-    }
+
+    await postService
+      .createPost(post, user)
+      .then(() =>
+        res.status(201).json({
+          success: true,
+          message: `자유 게시판 게시글 작성이 완료되었습니다.`,
+        })
+      )
+      .catch((err) => next(err));
   }
 );
 
@@ -139,15 +136,13 @@ router.get(
     const { skip, limit } = req.query;
     const user = req.userInfo;
     const postType = "free";
-    try {
-      await postService
-        .readPostsByType(user, postType, skip, limit)
-        .then((result) => {
-          res.status(200).json(result);
-        });
-    } catch (err) {
-      next(err);
-    }
+
+    await postService
+      .readPostsByType(user, postType, skip, limit)
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
   }
 );
 
@@ -161,13 +156,13 @@ router.get(
   async (req, res, next) => {
     const { postId } = req.params;
     const user = req.userInfo;
-    try {
-      await postService.readPost(postId, user).then((result) => {
+
+    await postService
+      .readPost(postId, user)
+      .then((result) => {
         res.status(200).json(result);
-      });
-    } catch (err) {
-      next(err);
-    }
+      })
+      .catch((err) => next(err));
   }
 );
 
@@ -182,13 +177,13 @@ router.patch(
     const { postId } = req.params;
     const user = req.userInfo;
     const newPost = req.body;
-    try {
-      await postService.updatePost(postId, newPost, user).then((result) => {
+
+    await postService
+      .updatePost(postId, newPost, user)
+      .then((result) => {
         res.status(200).send(`'${postId}'번 글이 수정되었습니다.`);
-      });
-    } catch (err) {
-      next(err);
-    }
+      })
+      .catch((err) => next(err));
   }
 );
 
@@ -202,13 +197,13 @@ router.delete(
   async (req, res, next) => {
     const { postId } = req.params;
     const user = req.userInfo;
-    try {
-      await postService.deletePost(postId, user).then((result) => {
+
+    await postService
+      .deletePost(postId, user)
+      .then((result) => {
         res.status(200).send(`'${postId}'번 글이 삭제되었습니다.`);
-      });
-    } catch (err) {
-      next(err);
-    }
+      })
+      .catch((err) => next(err));
   }
 );
 
@@ -219,15 +214,16 @@ router.delete(
 router.post("/notice", userAuthChecker(["admin"]), async (req, res, next) => {
   const post = req.body;
   const user = req.userInfo;
-  try {
-    await postService.createPost(post, user);
-    res.status(201).json({
-      success: true,
-      message: `공지 게시판 게시글 작성이 완료되었습니다.`,
-    });
-  } catch (err) {
-    next(err);
-  }
+
+  await postService
+    .createPost(post, user)
+    .then(() =>
+      res.status(201).json({
+        success: true,
+        message: `공지 게시판 게시글 작성이 완료되었습니다.`,
+      })
+    )
+    .catch((err) => next(err));
 });
 
 /**
@@ -238,18 +234,15 @@ router.get(
   "/notice",
   userAuthChecker(["admin", "user"]),
   async (req, res, next) => {
-    try {
-      const user = req.userInfo;
-      const postType = "notice";
-      const { skip, limit } = req.query;
-      await postService
-        .readPostsByType(user, postType, skip, limit)
-        .then((result) => {
-          res.status(200).json(result);
-        });
-    } catch (err) {
-      next(err);
-    }
+    const user = req.userInfo;
+    const postType = "notice";
+    const { skip, limit } = req.query;
+    await postService
+      .readPostsByType(user, postType, skip, limit)
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
   }
 );
 
@@ -263,13 +256,13 @@ router.get(
   async (req, res, next) => {
     const { postId } = req.params;
     const user = req.userInfo;
-    try {
-      await postService.readPost(postId, user).then((result) => {
+
+    await postService
+      .readPost(postId, user)
+      .then((result) => {
         res.status(200).json(result);
-      });
-    } catch (err) {
-      next(err);
-    }
+      })
+      .catch((err) => next(err));
   }
 );
 
@@ -284,13 +277,13 @@ router.patch(
     const { postId } = req.params;
     const user = req.userInfo;
     const newPost = req.body;
-    try {
-      await postService.updatePost(postId, newPost, user).then((result) => {
+
+    await postService
+      .updatePost(postId, newPost, user)
+      .then(() => {
         res.status(200).send(`'${postId}'번 글이 수정되었습니다.`);
-      });
-    } catch (err) {
-      next(err);
-    }
+      })
+      .catch((err) => next(err));
   }
 );
 
@@ -304,13 +297,15 @@ router.delete(
   async (req, res, next) => {
     const { postId } = req.params;
     const user = req.userInfo;
-    try {
-      await postService.deletePost(postId, user).then((result) => {
+
+    await postService
+      .deletePost(postId, user)
+      .then(() => {
         res.status(200).send(`'${postId}'번 글이 삭제되었습니다.`);
+      })
+      .catch((err) => {
+        next(err);
       });
-    } catch (err) {
-      next(err);
-    }
   }
 );
 
