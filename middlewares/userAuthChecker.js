@@ -1,13 +1,12 @@
-const {
+import { promisify } from "util";
+import jwt from "jsonwebtoken";
+import {
   BadRequestError,
   ForbiddenError,
   UnauthorizedError,
-} = require("../errors/httpErrors");
-const { UserModel } = require("../model/index");
-
-const { jwtConfig } = require("../config/config");
-const jwt = require("jsonwebtoken");
-const { promisify } = require("util");
+} from "../errors/httpErrors.js";
+import { UserModel } from "../model/index.js";
+import { jwtConfig } from "../config/config.js";
 
 const jwtVerify = promisify(jwt.verify);
 
@@ -54,7 +53,7 @@ const verify = async (token) => {
  * @description 토큰이 유효한 요청에 권한을 확인하고 유저 정보를 추가하는 미들웨어
  * @param {Array} roles 접근가능 회원등급 배열
  */
-const userAuthChecker = (roles) => {
+export const userAuthChecker = (roles) => {
   return async (req, res, next) => {
     try {
       const token = req.headers.authorization.split("Bearer ")[1];
@@ -73,5 +72,3 @@ const userAuthChecker = (roles) => {
     }
   };
 };
-
-module.exports = { userAuthChecker };

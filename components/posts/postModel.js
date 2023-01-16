@@ -1,8 +1,7 @@
 /**
  * @todo 게시판 모델 생성 및 export 하기
  * */
-
-const DataTypes = require("sequelize");
+import { DataTypes } from "sequelize";
 
 /**
  * 모든 속성은 unique: false, null: false 입니다.
@@ -10,8 +9,7 @@ const DataTypes = require("sequelize");
  * createdAt, updatedAt, deletedAt이 존재합니다.
  * underscored: true 를 사용하여 자동으로 snake_case로 변환됩니다.
  *  */
-
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const Post = sequelize.define(
     "Post",
     {
@@ -50,8 +48,8 @@ module.exports = (sequelize) => {
     Post.belongsTo(models.User, {
       foreignKey: {
         name: "userId",
-        allowNull: false
-      }
+        allowNull: false,
+      },
     });
   };
   return Post;

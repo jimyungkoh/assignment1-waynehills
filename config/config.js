@@ -1,12 +1,12 @@
-require("dotenv").config();
-//const path = require('path');
-// require("dotenv").config({ path: __dirname + "/dev.env" });
+import { config } from "dotenv";
+
+config();
 
 const env = process.env;
 
-const PORT = env.SERVER_PORT || 8080;
+export const PORT = env.SERVER_PORT || 8080;
 
-const development = {
+export const development = {
   username: env.MYSQL_USERNAME,
   password: env.MYSQL_PASSWORD,
   database: env.MYSQL_NAME,
@@ -16,7 +16,7 @@ const development = {
   logging: false,
 };
 
-const production = {
+export const production = {
   username: env.MYSQL_USERNAME,
   password: env.MYSQL_PASSWORD,
   database: env.MYSQL_NAME,
@@ -26,7 +26,7 @@ const production = {
   logging: false,
 };
 
-const test = {
+export const test = {
   username: env.MYSQL_USERNAME,
   password: env.MYSQL_PASSWORD,
   database: env.MYSQL_NAME,
@@ -36,7 +36,7 @@ const test = {
   logging: false,
 };
 
-const jwtConfig = {
+export const jwtConfig = {
   secretKey: env.JWT_SECRET,
   option: {
     algorithm: "HS256",
@@ -45,6 +45,4 @@ const jwtConfig = {
   },
 };
 
-const SECRET_KEY = env.SECRET_KEY;
-
-module.exports = { development, production, test, PORT, SECRET_KEY, jwtConfig };
+export const SECRET_KEY = env.SECRET_KEY;

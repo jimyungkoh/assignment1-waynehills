@@ -1,7 +1,7 @@
 /**
  * @todo 유저 모델 생성 및 export 하기
  * */
-const { DataTypes } = require("sequelize");
+import { DataTypes } from "sequelize";
 
 /**
  * unique: username, phoneNumber
@@ -11,7 +11,7 @@ const { DataTypes } = require("sequelize");
  * underscored: true 를 사용하여 자동으로 snake_case로 변환됩니다.
  *  */
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const User = sequelize.define(
     "User",
     {

@@ -1,7 +1,10 @@
 "use strict";
 
-const Sequelize = require("sequelize");
-const config = require("../config/config");
+import { Sequelize } from "sequelize";
+import * as config from "../config/config.js";
+import defineUserModel from "../components/users/userModel.js";
+import definePostModel from "../components/posts/postModel.js";
+
 const environment = "production";
 const env_conf = config[environment];
 
@@ -9,11 +12,12 @@ const sequelize = new Sequelize(
   env_conf.database,
   env_conf.username,
   env_conf.password,
-  env_conf
+  {
+    host: env_conf.host,
+    port: parseInt(env_conf.port),
+    dialect: env_conf.dialect,
+  }
 );
-
-const defineUserModel = require("../components/users/userModel");
-const definePostModel = require("../components/posts/postModel");
 
 const UserModel = defineUserModel(sequelize);
 const PostModel = definePostModel(sequelize);
@@ -25,12 +29,4 @@ Object.values(sequelize.models).forEach((model) => {
   }
 });
 
-/**
- * sequelize, 모델 모음
- * @todo exports에 sequelize를 이용해 생성한 모델들 담아주기
- * */
-module.exports = {
-  sequelize,
-  UserModel,
-  PostModel,
-};
+export { sequelize, UserModel, PostModel };

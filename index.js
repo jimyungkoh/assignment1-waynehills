@@ -1,6 +1,5 @@
-const {bootstrap} = require('./app');
+import { bootstrap } from "./app.js";
 
-bootstrap()
-  .catch((e) => {
-    console.error('Internal Server Error!!', e);
-  })
+bootstrap().catch((e) => {
+  console.error("Internal Server Error!!", e);
+});

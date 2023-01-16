@@ -15,4 +15,4 @@ const errorResponder = (err, req, res, next) => {
   next();
 };
 
-module.exports = { errorLogger, errorResponder };
+export { errorLogger, errorResponder };
