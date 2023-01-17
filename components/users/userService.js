@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { UserModel } from "../../model/index.js";
 import { BadRequestError } from "../../errors/httpErrors.js";
-import { jwtConfig } from "../../config/config.js";
+import { jwtConfig, bcryptConfig } from "../../config/config.js";
 
 /**
  * @todo 회원 생성 join 메서드
@@ -14,7 +14,7 @@ import { jwtConfig } from "../../config/config.js";
 export const join = async (userInfo) => {
   return await checkDuplicateUser(userInfo)
     .then(() => {
-      return bcrypt.hash(userInfo.password, 12);
+      return bcrypt.hash(userInfo.password, bcryptConfig.salt);
     })
     .then((hashedPassword) => {
       userInfo.password = hashedPassword;
@@ -69,7 +69,7 @@ export const deleteUser = async (username) => {
  * @returns {void}
  */
 export const updateUserRole = async (username, role) => {
-  await userManager.findUser(username).then(() =>
+  await findUser(username).then(() =>
     UserModel.update(
       { role: role },
       {
