@@ -73,7 +73,7 @@ router.delete(
 router.patch("/role", userAuthChecker(["admin"]), async (req, res, next) => {
   const { username, role } = req.body;
   await userService
-    .changeUserRole(username, role)
+    .updateUserRole(username, role)
     .then(() =>
       res.status(200).json({
         success: true,

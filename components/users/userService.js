@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { UserModel } from "../../model/index.js";
 import { BadRequestError } from "../../errors/httpErrors.js";
-import { jwtConfig } from "../../config/config.js";
+import { jwtConfig, bcryptConfig } from "../../config/config.js";
 
 /**
  * @todo 회원 생성 join 메서드
@@ -14,7 +14,7 @@ import { jwtConfig } from "../../config/config.js";
 export const join = async (userInfo) => {
   return await checkDuplicateUser(userInfo)
     .then(() => {
-      return bcrypt.hash(userInfo.password, 12);
+      return bcrypt.hash(userInfo.password, bcryptConfig.salt);
     })
     .then((hashedPassword) => {
       userInfo.password = hashedPassword;
@@ -63,20 +63,21 @@ export const deleteUser = async (username) => {
 };
 
 /**
- * @todo 회원 권한변경 editUserRole 메서드
  * @param {string} username
  * @param {string} role
- * @returns
  * @throws {BadRequestError}  username을 통해서 조회되는 정보가 없는 경우(등록된 사용자가 없는 경우) 발생
+ * @returns {void}
  */
-export const changeUserRole = async (username, role) => {
-  await UserModel.update(
-    { role: role },
-    {
-      where: {
-        username: username,
-      },
-    }
+export const updateUserRole = async (username, role) => {
+  await findUser(username).then(() =>
+    UserModel.update(
+      { role: role },
+      {
+        where: {
+          username: username,
+        },
+      }
+    )
   );
 };
 

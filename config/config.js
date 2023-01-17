@@ -45,4 +45,8 @@ export const jwtConfig = {
   },
 };
 
+export const bcryptConfig = {
+  salt: env.BCRYPT_SALT,
+};
+
 export const SECRET_KEY = env.SECRET_KEY;
